@@ -874,3 +874,16 @@ Ball: Master Ball
 - Rollout
 - Shock Wave
 - Mimic
+
+Magatsuhi (Gengar) (M)
+IVs: 0 Atk
+EVs: 6 Def / 252 SpA / 252 Spe
+Ability: Cursed Body
+Shiny: Yes
+Timid Nature
+~=Version=SM
+.Version=31
+- Taunt
+- Destiny Bond
+- Focus Blast
+- Shadow Ball

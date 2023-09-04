@@ -413,3 +413,29 @@ Adamant Nature
 - Tackle
 - Defense Curl
 - Self-Destruct
+
+Gengar (F)
+IVs: 13 HP / 27 Atk / 23 Def / 15 SpA / 24 SpD / 2 Spe
+Ability: Levitate
+Level: 21
+Brave Nature
+Ball: Master Ball
+~=Version=FRLG
+.Version=4
+- Spite
+- Curse
+- Night Shade
+- Confuse Ray
+
+Gengar (F)
+IVs: 30 HP / 10 Atk / 26 Def / 13 SpA / 2 SpD / 25 Spe
+Ability: Levitate
+Level: 25
+Lax Nature
+Ball: Master Ball
+~=Version=DP
+.Version=11
+- Night Shade
+- Shadow Punch
+- Sucker Punch
+- Curse

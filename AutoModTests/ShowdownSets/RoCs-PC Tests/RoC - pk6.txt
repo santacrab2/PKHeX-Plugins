@@ -940,20 +940,6 @@ Ball: Master Ball
 - Shadow Punch
 - Payback
 
-Gengar (M) @ Gengarite
-IVs: 23 HP / 21 Atk / 29 Def / 10 SpA / 28 SpD / 22 Spe
-Ability: Levitate
-Level: 38
-Mild Nature
-Ball: Master Ball
-~=Location=82
-~=Version=XY
-.Version=24
-- Sucker Punch
-- Shadow Punch
-- Payback
-- Shadow Ball
-
 Onix (F)
 IVs: 11 HP / 4 Atk / 12 Def / 3 SpA / 25 SpD / 17 Spe
 Ability: Sturdy

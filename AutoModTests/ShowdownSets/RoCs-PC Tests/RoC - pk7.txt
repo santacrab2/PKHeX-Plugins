@@ -6278,3 +6278,57 @@ Ball: Cherish Ball
 - Thunder Punch
 - Close Combat
 - Thunder
+
+Gengar (F)
+IVs: 13 HP / 27 Atk / 23 Def / 15 SpA / 24 SpD / 2 Spe
+Ability: Cursed Body
+Level: 21
+Brave Nature
+Ball: Master Ball
+~=Version=FRLG
+.Version=4
+- Spite
+- Curse
+- Night Shade
+- Confuse Ray
+
+Gengar (F)
+IVs: 30 HP / 10 Atk / 26 Def / 13 SpA / 2 SpD / 25 Spe
+Ability: Cursed Body
+Level: 25
+Lax Nature
+Ball: Master Ball
+~=Version=DP
+.Version=11
+- Night Shade
+- Shadow Punch
+- Sucker Punch
+- Curse
+
+Gengar (F)
+IVs: 17 HP / 18 Atk / 29 Def / 15 SpA / 21 SpD / 12 Spe
+Ability: Cursed Body
+Level: 25
+Adamant Nature
+Ball: Master Ball
+~=Location=75
+~=Version=B2W2
+.Version=23
+- Sucker Punch
+- Shadow Punch
+- Confuse Ray
+- Sludge Wave
+
+Gengar (M) @ Gengarite
+IVs: 23 HP / 21 Atk / 29 Def / 10 SpA / 28 SpD / 22 Spe
+Ability: Cursed Body
+Level: 38
+Mild Nature
+Ball: Master Ball
+~=Location=82
+~=Version=XY
+.Version=24
+- Sucker Punch
+- Shadow Punch
+- Payback
+- Shadow Ball

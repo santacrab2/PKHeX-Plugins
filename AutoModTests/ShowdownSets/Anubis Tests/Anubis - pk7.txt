@@ -466,19 +466,6 @@ Ball: Master Ball
 - Spite
 - Mean Look
 
-Magatsuhi (Gengar) (M)
-IVs: 0 Atk
-EVs: 6 Def / 252 SpA / 252 Spe
-Ability: Cursed Body
-Shiny: Yes
-Timid Nature
-~=Version=SM
-.Version=31
-- Taunt
-- Destiny Bond
-- Focus Blast
-- Shadow Ball
-
 Exeggcute (F)
 IVs: 14 Atk
 EVs: 252 HP / 83 Atk / 124 Def / 14 SpA / 6 SpD / 31 Spe

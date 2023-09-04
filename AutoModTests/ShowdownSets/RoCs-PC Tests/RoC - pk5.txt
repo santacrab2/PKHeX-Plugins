@@ -785,20 +785,6 @@ Ball: Master Ball
 - Spike Cannon
 - Spikes
 
-Gengar (F)
-IVs: 17 HP / 18 Atk / 29 Def / 15 SpA / 21 SpD / 12 Spe
-Ability: Levitate
-Level: 25
-Adamant Nature
-Ball: Master Ball
-~=Location=75
-~=Version=B2W2
-.Version=23
-- Sucker Punch
-- Shadow Punch
-- Confuse Ray
-- Sludge Wave
-
 Onix (M)
 IVs: 1 HP / 23 Atk / 4 Def / 21 SpA / 30 SpD / 30 Spe
 Ability: Rock Head

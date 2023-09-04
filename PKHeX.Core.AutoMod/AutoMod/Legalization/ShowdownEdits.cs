@@ -45,7 +45,7 @@ namespace PKHeX.Core.AutoMod
             SetAbility(pk, set, preference);
         }
 
-        private static void SetNature(PKM pk, IBattleTemplate set, IEncounterable enc)
+        public static void SetNature(PKM pk, IBattleTemplate set, IEncounterable enc)
         {
             if (pk.Nature == set.Nature || set.Nature == -1)
                 return;
@@ -77,10 +77,10 @@ namespace PKHeX.Core.AutoMod
                 pk.StatNature = (int)Nature.Serious;
         }
 
-        private static void SetAbility(PKM pk, IBattleTemplate set, AbilityPermission preference)
+        public static void SetAbility(PKM pk, IBattleTemplate set, AbilityPermission preference)
         {
-            if (pk.Ability != set.Ability && set.Ability != -1)
-                pk.SetAbility(set.Ability);
+            if (pk.Ability != set.Ability)
+                pk.RefreshAbility(pk is PK5 { HiddenAbility: true } ? 2 : pk.AbilityNumber >> 1);
 
             if (preference <= 0)
                 return;
@@ -111,7 +111,7 @@ namespace PKHeX.Core.AutoMod
         /// <param name="Form">Form to apply</param>
         /// <param name="enc">Encounter detail</param>
         /// <param name="lang">Language to apply</param>
-        public static void SetSpeciesLevel(this PKM pk, IBattleTemplate set, byte Form, IEncounterable enc,ITrainerInfo handler, LanguageID? lang = null)
+        public static void SetSpeciesLevel(this PKM pk, IBattleTemplate set, byte Form, IEncounterable enc, ITrainerInfo handler, LanguageID? lang = null)
         {
             pk.ApplySetGender(set);
             pk.SetRecordFlags(set.Moves); // Set record flags before evolution (TODO: what if middle evolution has exclusive record moves??)
@@ -141,9 +141,12 @@ namespace PKHeX.Core.AutoMod
             }
 
             pk.SetSuggestedFormArgument(enc.Species);
-            if (evolutionRequired)
-                pk.RefreshAbility(pk.AbilityNumber >> 1);
-            if(pk.CurrentLevel!=set.Level)
+            if (evolutionRequired || formchange)
+            {
+                var abilitypref = enc.Ability;
+                SetAbility(pk, set, abilitypref);
+            }
+            if (pk.CurrentLevel != set.Level)
                 pk.CurrentLevel = set.Level;
             if (pk.Met_Level > pk.CurrentLevel)
                 pk.Met_Level = pk.CurrentLevel;

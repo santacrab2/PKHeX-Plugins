@@ -816,19 +816,6 @@ Ball: Master Ball
 - Lick
 - Spite
 
-Gengar (F)
-IVs: 30 HP / 10 Atk / 26 Def / 13 SpA / 2 SpD / 25 Spe
-Ability: Levitate
-Level: 25
-Lax Nature
-Ball: Master Ball
-~=Version=DP
-.Version=11
-- Night Shade
-- Shadow Punch
-- Sucker Punch
-- Curse
-
 Onix (F)
 IVs: 13 HP / 0 Atk / 24 Def / 12 SpA / 20 SpD / 19 Spe
 Ability: Rock Head

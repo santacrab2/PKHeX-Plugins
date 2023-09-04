@@ -517,3 +517,65 @@ Ball: Master Ball
 - Work Up
 - Screech
 - Iron Defense
+
+Gengar (M)
+IVs: 15 HP / 8 Atk / 30 Def / 2 SpA / 30 SpD / 27 Spe
+Ability: Cursed Body
+Level: 17
+Brave Nature
+Ball: Master Ball
+~=Version=Pt
+- Spite
+- Mean Look
+- Curse
+- Night Shade
+
+Gengar (F)
+IVs: 30 HP / 11 Atk / 4 SpA / 27 SpD / 18 Spe
+Ability: Cursed Body
+Level: 16
+Gentle Nature
+Ball: Master Ball
+~=Version=DP
+.Version=10
+- Spite
+- Mean Look
+- Curse
+- Night Shade
+
+Gaspar (Gengar) (M)
+IVs: 20 HP / 25 Atk / 15 Def / 15 SpA / 15 SpD / 25 Spe
+Ability: Cursed Body
+Level: 35
+Hasty Nature
+~=Version=DPPt
+=OT_Name=Mindy
+- Sucker Punch
+- Shadow Punch
+- Payback
+- Shadow Ball
+
+Gengar (M)
+IVs: 15 HP / 24 Def / 30 SpA / 3 SpD / 23 Spe
+Ability: Cursed Body
+Level: 19
+Mild Nature
+Ball: Master Ball
+~=Version=HGSS
+.Version=7
+- Mean Look
+- Curse
+- Night Shade
+- Confuse Ray
+
+Gengar (M)
+IVs: 7 HP / 6 Atk / 8 Def / 20 SpA / 21 SpD / 20 Spe
+Ability: Cursed Body
+Level: 17
+Sassy Nature
+Ball: Master Ball
+~=Version=Pt
+- Spite
+- Mean Look
+- Curse
+- Night Shade

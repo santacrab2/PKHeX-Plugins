@@ -896,19 +896,6 @@ Ball: Master Ball
 - Curse
 - Night Shade
 
-Gengar (F)
-IVs: 13 HP / 27 Atk / 23 Def / 15 SpA / 24 SpD / 2 Spe
-Ability: Levitate
-Level: 21
-Brave Nature
-Ball: Master Ball
-~=Version=FRLG
-.Version=4
-- Spite
-- Curse
-- Night Shade
-- Confuse Ray
-
 Onix (M)
 IVs: 3 HP / 18 Atk / 17 Def / 11 SpA / 16 SpD / 20 Spe
 Ability: Rock Head
