@@ -32,19 +32,6 @@ namespace PKHeX.Core.AutoMod
                 pk.Gender = pk.GetSaneGender();
         }
 
-        /// <summary>
-        /// Set Nature and Ability of the pokemon
-        /// </summary>
-        /// <param name="pk">PKM to modify</param>
-        /// <param name="set">Showdown Set to refer</param>
-        /// <param name="enc">Encounter to reference</param>
-        /// <param name="preference">Ability index (1/2/4) preferred; &lt;= 0 for any</param>
-        public static void SetNatureAbility(this PKM pk, IBattleTemplate set, IEncounterable enc, AbilityPermission preference = AbilityPermission.Any12H)
-        {
-            SetNature(pk, set, enc);
-            SetAbility(pk, set, preference);
-        }
-
         public static void SetNature(PKM pk, IBattleTemplate set, IEncounterable enc)
         {
             if (pk.Nature == set.Nature || set.Nature == -1)
