@@ -103,6 +103,15 @@ namespace PKHeX.Core.AutoMod
                 // Create the PKM from the template.
                 var tr = SimpleEdits.IsUntradeableEncounter(enc) ? dest : GetTrainer(regen, enc.Version, enc.Generation);
                 var raw = enc.ConvertToPKM(tr, criteria);
+
+                // If the encounter is a Wurmple, we need to make sure the evolution is correct.
+                if (enc.Species == (int)Species.Wurmple && set.Species != (int)Species.Wurmple)
+                {
+                    var wdest = WurmpleUtil.GetWurmpleEvoGroup(set.Species);
+                    while (WurmpleUtil.GetWurmpleEvoVal(raw.PID) != wdest)
+                        raw = enc.ConvertToPKM(tr, criteria);
+                }
+
                 if (raw.OT_Name.Length == 0)
                 {
                     raw.Language = tr.Language;
