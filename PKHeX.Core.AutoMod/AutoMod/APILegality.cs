@@ -563,7 +563,7 @@ namespace PKHeX.Core.AutoMod
         /// Validate and Set the gender if needed
         /// </summary>
         /// <param name="pk">PKM to modify</param>
-        private static void ValidateGender(PKM pk, ushort encSpecies)
+        private static void ValidateGender(PKM pk)
         {
             bool genderValid = pk.IsGenderValid();
             if (!genderValid)
@@ -815,7 +815,7 @@ namespace PKHeX.Core.AutoMod
                     return; // Fixed PID, no need to mutate
                 default:
                     FindPIDIV(pk, method, hpType, set.Shiny, enc,set);
-                    ValidateGender(pk, enc.Species);
+                    ValidateGender(pk);
                     break;
             }
         }
@@ -929,7 +929,7 @@ namespace PKHeX.Core.AutoMod
 
             var count = 0;
             var compromise = false;
-            var applied = true;
+            bool applied;
             do
             {
                 ulong seed = Util.Rand32();
@@ -1183,11 +1183,10 @@ namespace PKHeX.Core.AutoMod
             }
 
             var iterPKM = pk.Clone();
+
             if(iterPKM.Ability != set.Ability && set.Ability != -1)
-            {
-                var abilitypref = enc.Ability;
                 iterPKM.SetAbility(set.Ability>>1);
-            }
+
             var count = 0;
             var isWishmaker = Method == PIDType.BACD_R && shiny && enc is WC3 { OT_Name: "WISHMKR" };
             var compromise = false;
@@ -1408,20 +1407,20 @@ namespace PKHeX.Core.AutoMod
         {
             if(enc is EncounterStatic8U)
                 criteria = criteria with { Shiny = Shiny.Never };
-            
-            switch (enc.Species)
+
+            return (Species)enc.Species switch
             {
-                case (int)Species.Kartana when criteria.Nature == Nature.Timid && criteria.IV_ATK <= 21: // Speed boosting Timid Kartana ATK IVs <= 19
-                    return criteria with { IV_HP = -1, IV_ATK = criteria.IV_ATK, IV_DEF = -1, IV_SPA = -1, IV_SPD = -1, IV_SPE = -1 };
+                Species.Kartana when criteria.Nature == Nature.Timid && criteria.IV_ATK <= 21 // Speed boosting Timid Kartana ATK IVs <= 19
+                    => criteria with { IV_HP = -1, IV_ATK = criteria.IV_ATK, IV_DEF = -1, IV_SPA = -1, IV_SPD = -1, IV_SPE = -1 },
 
-                case (int)Species.Stakataka when criteria.Nature == Nature.Lonely && criteria.IV_DEF <= 17: // Atk boosting Lonely Stakataka DEF IVs <= 15
-                    return criteria with { IV_HP = -1, IV_ATK = -1, IV_DEF = criteria.IV_DEF, IV_SPA = -1, IV_SPD = -1, IV_SPE = criteria.IV_SPE};
+                Species.Stakataka when criteria.Nature == Nature.Lonely && criteria.IV_DEF <= 17 // Atk boosting Lonely Stakataka DEF IVs <= 15
+                    => criteria with { IV_HP = -1, IV_ATK = -1, IV_DEF = criteria.IV_DEF, IV_SPA = -1, IV_SPD = -1, IV_SPE = criteria.IV_SPE },
 
-                case (int)Species.Pyukumuku when criteria.IV_DEF == 0 && criteria.IV_SPD == 0 && set.Ability == (int)Ability.InnardsOut : // 0 Def / 0 Spd Pyukumuku with innards out
-                    return criteria with { IV_HP = -1, IV_ATK = -1, IV_DEF = criteria.IV_DEF, IV_SPA = -1, IV_SPD = criteria.IV_SPD, IV_SPE = -1 };
-            }
-            
-            return criteria with { IV_ATK = criteria.IV_ATK == 0 ? 0 : -1, IV_DEF = -1, IV_HP = -1, IV_SPA = -1, IV_SPD = -1, IV_SPE = criteria.IV_SPE == 0 ? 0 : -1 };
+                Species.Pyukumuku when criteria.IV_DEF == 0 && criteria.IV_SPD == 0 && (Ability)set.Ability is Ability.InnardsOut // 0 Def / 0 Spd Pyukumuku with innards out
+                    => criteria with { IV_HP = -1, IV_ATK = -1, IV_DEF = criteria.IV_DEF, IV_SPA = -1, IV_SPD = criteria.IV_SPD, IV_SPE = -1 },
+
+                _ => criteria with { IV_ATK = criteria.IV_ATK == 0 ? 0 : -1, IV_DEF = -1, IV_HP = -1, IV_SPA = -1, IV_SPD = -1, IV_SPE = criteria.IV_SPE == 0 ? 0 : -1 },
+            };
         }
 
         /// <summary>
