@@ -1,8 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-using AutoModPlugins.Properties;
+﻿using AutoModPlugins.Properties;
 using PKHeX.Core;
 using PKHeX.Core.AutoMod;
+using System;
+using System.Windows.Forms;
 
 namespace AutoModPlugins
 {

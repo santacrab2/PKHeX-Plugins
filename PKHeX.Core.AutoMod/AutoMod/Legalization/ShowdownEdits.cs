@@ -165,7 +165,7 @@ namespace PKHeX.Core.AutoMod
 
                 var nick = et.GetNickname(pk.Language);
                 //Meister Magikarp's nickname is based on the save language instead of the pk language
-                if (enc is EncounterTrade8b {Species:(int)Species.Magikarp })
+                if (enc is EncounterTrade8b { Species: (int)Species.Magikarp })
                     nick = et.GetNickname(handler.Language);
                 if (nick != null)
                 {
@@ -301,7 +301,7 @@ namespace PKHeX.Core.AutoMod
         /// <param name="pk">Pokemon to modify</param>
         public static void SetEncounterTradeIVs(this IEncounterable t, PKM pk)
         {
-                pk.SetRandomIVs(minFlawless: 3);
+            pk.SetRandomIVs(minFlawless: 3);
         }
 
         /// <summary>

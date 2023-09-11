@@ -337,12 +337,12 @@ namespace PKHeX.Core.AutoMod
             // { IV_HP, IV_ATK, IV_DEF, IV_SPE, IV_SPA, IV_SPD } (original order)
             // { IV_HP, IV_ATK, IV_DEF, IV_SPA, IV_SPD, IV_SPE } (corrected order)
             int result = 0;
-            result |= ivs[0] << (5*0);
-            result |= ivs[1] << (5*1);
-            result |= ivs[2] << (5*2);
-            result |= ivs[4] << (5*3);
-            result |= ivs[5] << (5*4);
-            result |= ivs[3] << (5*5);
+            result |= ivs[0] << (5 * 0);
+            result |= ivs[1] << (5 * 1);
+            result |= ivs[2] << (5 * 2);
+            result |= ivs[4] << (5 * 3);
+            result |= ivs[5] << (5 * 4);
+            result |= ivs[3] << (5 * 5);
             return result;
         }
     }

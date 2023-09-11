@@ -1,6 +1,6 @@
-﻿using System.IO;
-using PKHeX.Core;
+﻿using PKHeX.Core;
 using PKHeX.Core.AutoMod;
+using System.IO;
 
 namespace AutoModTests
 {

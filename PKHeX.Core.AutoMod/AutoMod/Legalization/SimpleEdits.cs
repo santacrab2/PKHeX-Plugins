@@ -118,7 +118,7 @@ namespace PKHeX.Core.AutoMod
             ( IronLeaves, 0 ),
         };
 
-        public static readonly HashSet<int> Gen1TradeEvos = new () { (int)Kadabra, (int)Machoke, (int)Graveler, (int)Haunter };
+        public static readonly HashSet<int> Gen1TradeEvos = new() { (int)Kadabra, (int)Machoke, (int)Graveler, (int)Haunter };
 
         private static Func<int, int, int> FlagIVsAutoMod(PKM pk)
         {
@@ -341,7 +341,7 @@ namespace PKHeX.Core.AutoMod
             if (enc is WC9 wc9)
             {
                 size.WeightScalar = (byte)wc9.WeightValue;
-                size.HeightScalar= (byte)wc9.HeightValue;
+                size.HeightScalar = (byte)wc9.HeightValue;
                 return;
             }
 
@@ -424,7 +424,7 @@ namespace PKHeX.Core.AutoMod
             Span<byte> result = stackalloc byte[6];
             AwakeningUtil.SetExpectedMinimumAVs(result, (PB7)pb7);
             var EVs = set.EVs;
-            pb7.AV_HP  = Math.Max(result[0], (byte)EVs[0]);
+            pb7.AV_HP = Math.Max(result[0], (byte)EVs[0]);
             pb7.AV_ATK = Math.Max(result[1], (byte)EVs[1]);
             pb7.AV_DEF = Math.Max(result[2], (byte)EVs[2]);
             pb7.AV_SPA = Math.Max(result[3], (byte)EVs[4]);
@@ -470,7 +470,7 @@ namespace PKHeX.Core.AutoMod
                 return;
 
             IVs ??= pk.IVs;
-            t.HT_HP  = pk.IV_HP  != 31;
+            t.HT_HP = pk.IV_HP != 31;
             t.HT_ATK = pk.IV_ATK != 31 && IVs[1] > 2;
             t.HT_DEF = pk.IV_DEF != 31;
             t.HT_SPA = pk.IV_SPA != 31 && IVs[4] > 2;

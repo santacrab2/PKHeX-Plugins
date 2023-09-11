@@ -1,8 +1,8 @@
-using System;
-using System.Windows.Forms;
 using AutoModPlugins.Properties;
 using PKHeX.Core;
 using PKHeX.Core.Enhancements;
+using System;
+using System.Windows.Forms;
 
 namespace AutoModPlugins
 {
@@ -14,7 +14,7 @@ namespace AutoModPlugins
 
         protected override void AddPluginControl(ToolStripDropDownItem modmenu)
         {
-            var ctrl = new ToolStripMenuItem(Name) {Name = "Menu_SmogonGenner", Image = Resources.smogongenner};
+            var ctrl = new ToolStripMenuItem(Name) { Name = "Menu_SmogonGenner", Image = Resources.smogongenner };
             modmenu.DropDownItems.Add(ctrl);
             ctrl.Click += SmogonGenning;
         }

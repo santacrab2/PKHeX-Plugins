@@ -1,10 +1,10 @@
-﻿using System;
+﻿using LibUsbDotNet;
+using LibUsbDotNet.Main;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using LibUsbDotNet;
-using LibUsbDotNet.Main;
 
 namespace PKHeX.Core.Injection
 {
