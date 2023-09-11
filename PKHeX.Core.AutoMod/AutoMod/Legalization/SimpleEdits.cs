@@ -424,7 +424,7 @@ namespace PKHeX.Core.AutoMod
             Span<byte> result = stackalloc byte[6];
             AwakeningUtil.SetExpectedMinimumAVs(result, (PB7)pb7);
             var EVs = set.EVs;
-            pb7.AV_HP = Math.Max(result[0], (byte)EVs[0]);
+            pb7.AV_HP  = Math.Max(result[0], (byte)EVs[0]);
             pb7.AV_ATK = Math.Max(result[1], (byte)EVs[1]);
             pb7.AV_DEF = Math.Max(result[2], (byte)EVs[2]);
             pb7.AV_SPA = Math.Max(result[3], (byte)EVs[4]);

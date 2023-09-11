@@ -1185,9 +1185,8 @@ namespace PKHeX.Core.AutoMod
 
             var iterPKM = pk.Clone();
 
-
-            if(iterPKM.Ability != set.Ability && set.Ability != -1)
-                iterPKM.SetAbility(set.Ability>>1);
+            if (iterPKM.Ability != set.Ability && set.Ability != -1)
+                iterPKM.SetAbility(set.Ability >> 1);
             var count = 0;
             var isWishmaker = Method == PIDType.BACD_R && shiny && enc is WC3 { OT_Name: "WISHMKR" };
             var compromise = false;
@@ -1409,12 +1408,11 @@ namespace PKHeX.Core.AutoMod
             if (enc is EncounterStatic8U)
                 criteria = criteria with { Shiny = Shiny.Never };
 
-
             return (Species)enc.Species switch
             {
                 Species.Kartana when criteria.Nature == Nature.Timid && criteria.IV_ATK <= 21 // Speed boosting Timid Kartana ATK IVs <= 19
                     => criteria with { IV_HP = -1, IV_ATK = criteria.IV_ATK, IV_DEF = -1, IV_SPA = -1, IV_SPD = -1, IV_SPE = -1 },
-                
+
                 Species.Stakataka when criteria.Nature == Nature.Lonely && criteria.IV_DEF <= 17 // Atk boosting Lonely Stakataka DEF IVs <= 15
                     => criteria with { IV_HP = -1, IV_ATK = -1, IV_DEF = criteria.IV_DEF, IV_SPA = -1, IV_SPD = -1, IV_SPE = criteria.IV_SPE },
 
