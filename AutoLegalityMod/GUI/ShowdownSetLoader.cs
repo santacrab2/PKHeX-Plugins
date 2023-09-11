@@ -1,11 +1,11 @@
-﻿using System;
+﻿using PKHeX.Core;
+using PKHeX.Core.AutoMod;
+using PKHeX.Core.Enhancements;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
-using PKHeX.Core;
-using PKHeX.Core.AutoMod;
-using PKHeX.Core.Enhancements;
 
 namespace AutoModPlugins
 {

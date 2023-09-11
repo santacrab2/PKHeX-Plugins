@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static PKHeX.Core.AutoMod.Aesthetics.PersonalColor;
 using static PKHeX.Core.Ball;
 using static PKHeX.Core.Species;
-using static PKHeX.Core.AutoMod.Aesthetics.PersonalColor;
 
 namespace PKHeX.Core.AutoMod
 {

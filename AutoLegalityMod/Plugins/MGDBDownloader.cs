@@ -1,9 +1,9 @@
-﻿using System;
-using System.IO;
-using System.Windows.Forms;
-using AutoModPlugins.Properties;
+﻿using AutoModPlugins.Properties;
 using PKHeX.Core;
 using PKHeX.Core.Enhancements;
+using System;
+using System.IO;
+using System.Windows.Forms;
 
 namespace AutoModPlugins
 {
@@ -39,7 +39,7 @@ namespace AutoModPlugins
                 "Selecting No will download only the public release of the database.");
 
             if (prompt == DialogResult.Cancel)
-              return;
+                return;
             var entire = prompt == DialogResult.Yes;
             EventsGallery.DownloadMGDBFromGitHub(MGDatabasePath, entire);
             WinFormsUtil.Alert("Download Finished");

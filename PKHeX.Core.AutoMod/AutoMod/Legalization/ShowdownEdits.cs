@@ -67,8 +67,8 @@ namespace PKHeX.Core.AutoMod
         public static void SetAbility(PKM pk, IBattleTemplate set, AbilityPermission preference)
         {
             if (pk.Ability != set.Ability)
-                pk.RefreshAbility(pk is PK5 { HiddenAbility: true } ? 2 : pk.AbilityNumber >>1);
-            if(pk.Ability != set.Ability && pk.Context >= EntityContext.Gen8)
+                pk.RefreshAbility(pk is PK5 { HiddenAbility: true } ? 2 : pk.AbilityNumber >> 1);
+            if (pk.Ability != set.Ability && pk.Context >= EntityContext.Gen8 && set.Ability != -1)
                 pk.RefreshAbility(pk is PK5 { HiddenAbility: true } ? 2 : pk.PersonalInfo.GetIndexOfAbility(set.Ability));
             if (preference <= 0)
                 return;
@@ -129,7 +129,7 @@ namespace PKHeX.Core.AutoMod
             }
 
             pk.SetSuggestedFormArgument(enc.Species);
-            if (evolutionRequired || formchange || (pk.Ability != set.Ability && set.Ability!=-1))
+            if (evolutionRequired || formchange || (pk.Ability != set.Ability && set.Ability != -1))
             {
                 var abilitypref = enc.Ability;
                 SetAbility(pk, set, abilitypref);
@@ -165,7 +165,7 @@ namespace PKHeX.Core.AutoMod
 
                 var nick = et.GetNickname(pk.Language);
                 //Meister Magikarp's nickname is based on the save language instead of the pk language
-                if (enc is EncounterTrade8b {Species:(int)Species.Magikarp })
+                if (enc is EncounterTrade8b { Species: (int)Species.Magikarp })
                     nick = et.GetNickname(handler.Language);
                 if (nick != null)
                 {
@@ -301,7 +301,7 @@ namespace PKHeX.Core.AutoMod
         /// <param name="pk">Pokemon to modify</param>
         public static void SetEncounterTradeIVs(this IEncounterable t, PKM pk)
         {
-                pk.SetRandomIVs(minFlawless: 3);
+            pk.SetRandomIVs(minFlawless: 3);
         }
 
         /// <summary>

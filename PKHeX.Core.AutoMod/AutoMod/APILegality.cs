@@ -94,12 +94,12 @@ namespace PKHeX.Core.AutoMod
                 }
 
                 // Look before we leap -- don't waste time generating invalid / incompatible junk.
-               if (!IsEncounterValid(set, enc, abilityreq, destVer))
-                   continue;
+                if (!IsEncounterValid(set, enc, abilityreq, destVer))
+                    continue;
 
-               if (enc is IFixedNature { IsFixedNature: true } fixedNature)
-                   criteria = criteria with { Nature = Nature.Random };
-                criteria = SetSpecialCriteria(criteria,enc, set);
+                if (enc is IFixedNature { IsFixedNature: true } fixedNature)
+                    criteria = criteria with { Nature = Nature.Random };
+                criteria = SetSpecialCriteria(criteria, enc, set);
                 // Create the PKM from the template.
                 var tr = SimpleEdits.IsUntradeableEncounter(enc) ? dest : GetTrainer(regen, enc.Version, enc.Generation);
                 var raw = enc.ConvertToPKM(tr, criteria);
@@ -125,14 +125,14 @@ namespace PKHeX.Core.AutoMod
 
                 // Transfer any VC1 via VC2, as there may be GSC exclusive moves requested.
                 if (dest.Generation >= 7 && raw is PK1 basepk1)
-                   raw = basepk1.ConvertToPK2();
+                    raw = basepk1.ConvertToPK2();
 
-                if (enc is EncounterTrade8b { Species: (ushort)Species.Magikarp})
+                if (enc is EncounterTrade8b { Species: (ushort)Species.Magikarp })
                 {
                     tr = set.Nickname switch
                     {
                         "ポッちゃん" => SaveUtil.GetBlankSAV(tr.Context, tr.OT, LanguageID.Japanese),
-                        "Bloupi" => SaveUtil.GetBlankSAV(tr.Context,tr.OT, LanguageID.French),
+                        "Bloupi" => SaveUtil.GetBlankSAV(tr.Context, tr.OT, LanguageID.French),
                         "Mossy" => SaveUtil.GetBlankSAV(tr.Context, tr.OT, LanguageID.Italian),
                         "Pador" => SaveUtil.GetBlankSAV(tr.Context, tr.OT, LanguageID.German),
                         _ => SaveUtil.GetBlankSAV(tr.Context, tr.OT, LanguageID.English)
@@ -293,7 +293,7 @@ namespace PKHeX.Core.AutoMod
 
                 GameVersion[] result;
                 if (value.IsValidSavedVersion())
-                    result = new GameVersion[] {value};
+                    result = new GameVersion[] { value };
                 else
                     result = GameUtil.GameVersions.Where(z => value.Contains(z)).ToArray();
 
@@ -364,7 +364,7 @@ namespace PKHeX.Core.AutoMod
         private static bool IsEncounterValid(IBattleTemplate set, IEncounterable enc, AbilityRequest abilityreq, GameVersion destVer)
         {
             // Don't process if encounter min level is higher than requested level
-            if(enc.Generation > 2)
+            if (enc.Generation > 2)
                 if (!IsRequestedLevelValid(set, enc))
                     return false;
 
@@ -530,7 +530,7 @@ namespace PKHeX.Core.AutoMod
             var language = regen.Extra.Language;
             var pidiv = MethodFinder.Analyze(pk);
             pk.SetPINGA(set, pidiv.Type, set.HiddenPowerType, enc);
-            pk.SetSpeciesLevel(set, Form, enc, handler,language);
+            pk.SetSpeciesLevel(set, Form, enc, handler, language);
             pk.SetDateLocks(enc);
             pk.SetHeldItem(set);
             // Actions that do not affect set legality
@@ -544,7 +544,7 @@ namespace PKHeX.Core.AutoMod
             pk.SetHyperTrainingFlags(set, enc); // Hypertrain
             pk.SetEncryptionConstant(enc);
             pk.SetShinyBoolean(set.Shiny, enc, regen.Extra.ShinyType);
-            pk.FixGender(enc,set);
+            pk.FixGender(enc, set);
             // Final tweaks
             pk.SetGimmicks(set);
             pk.SetGigantamaxFactor(set, enc);
@@ -814,6 +814,7 @@ namespace PKHeX.Core.AutoMod
                     enc.SetEncounterTradeIVs(pk);
                     return; // Fixed PID, no need to mutate
                 default:
+
                     FindPIDIV(pk, method, hpType, set.Shiny, enc,set);
                     ValidateGender(pk);
                     break;
@@ -946,8 +947,8 @@ namespace PKHeX.Core.AutoMod
                         undefinedSize, undefinedSize, undefinedSize, undefinedSize, e.Ability, e.Shiny),
                     _ => throw new NotImplementedException("Unknown ITeraRaid9 type detected"),
                 };
-               applied = enc.TryApply32(pk, seed, param, criteria);
-                if(applied)
+                applied = enc.TryApply32(pk, seed, param, criteria);
+                if (applied)
                     if (IsMatchCriteria9(pk, set, criteria, compromise))
                         break;
                 if (count == 1_000)
@@ -1184,9 +1185,9 @@ namespace PKHeX.Core.AutoMod
 
             var iterPKM = pk.Clone();
 
+
             if(iterPKM.Ability != set.Ability && set.Ability != -1)
                 iterPKM.SetAbility(set.Ability>>1);
-
             var count = 0;
             var isWishmaker = Method == PIDType.BACD_R && shiny && enc is WC3 { OT_Name: "WISHMKR" };
             var compromise = false;
@@ -1405,14 +1406,15 @@ namespace PKHeX.Core.AutoMod
         ///
         public static EncounterCriteria SetSpecialCriteria(EncounterCriteria criteria, IEncounterable enc, IBattleTemplate set)
         {
-            if(enc is EncounterStatic8U)
+            if (enc is EncounterStatic8U)
                 criteria = criteria with { Shiny = Shiny.Never };
+
 
             return (Species)enc.Species switch
             {
                 Species.Kartana when criteria.Nature == Nature.Timid && criteria.IV_ATK <= 21 // Speed boosting Timid Kartana ATK IVs <= 19
                     => criteria with { IV_HP = -1, IV_ATK = criteria.IV_ATK, IV_DEF = -1, IV_SPA = -1, IV_SPD = -1, IV_SPE = -1 },
-
+                
                 Species.Stakataka when criteria.Nature == Nature.Lonely && criteria.IV_DEF <= 17 // Atk boosting Lonely Stakataka DEF IVs <= 15
                     => criteria with { IV_HP = -1, IV_ATK = -1, IV_DEF = criteria.IV_DEF, IV_SPA = -1, IV_SPD = -1, IV_SPE = criteria.IV_SPE },
 

@@ -1,6 +1,6 @@
-using System;
 using FluentAssertions;
 using PKHeX.Core.Enhancements;
+using System;
 using Xunit;
 
 namespace AutoModTests

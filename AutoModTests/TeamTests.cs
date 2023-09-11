@@ -1,11 +1,11 @@
-﻿using System;
+﻿using FluentAssertions;
+using PKHeX.Core;
+using PKHeX.Core.AutoMod;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using FluentAssertions;
-using PKHeX.Core;
-using PKHeX.Core.AutoMod;
 using Xunit;
 using static PKHeX.Core.GameVersion;
 

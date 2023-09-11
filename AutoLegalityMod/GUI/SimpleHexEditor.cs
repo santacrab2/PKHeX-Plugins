@@ -1,9 +1,9 @@
-﻿using System;
+﻿using PKHeX.Core;
+using PKHeX.Core.Injection;
+using System;
 using System.Linq;
 using System.Timers;
 using System.Windows.Forms;
-using PKHeX.Core.Injection;
-using PKHeX.Core;
 
 namespace AutoModPlugins.GUI
 {
@@ -74,7 +74,8 @@ namespace AutoModPlugins.GUI
                         result = DecryptBlock(block_key, result)[headersize..];
                 }
                 var r_text = string.Join(" ", result.Select(z => $"{z:X2}"));
-                RTB_RAM.Invoke((MethodInvoker)delegate {
+                RTB_RAM.Invoke((MethodInvoker)delegate
+                {
                     if (RTB_RAM.Text != r_text) // Prevent text updates if there is no update since they hinder copying
                         RTB_RAM.Text = r_text;
                 });
