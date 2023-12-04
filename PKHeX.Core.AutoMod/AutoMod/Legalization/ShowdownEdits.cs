@@ -324,7 +324,6 @@ namespace PKHeX.Core.AutoMod
         /// <summary>
         /// Set encounter trade IVs for a specific encounter trade
         /// </summary>
-        /// <param name="t">EncounterTrade</param>
         /// <param name="pk">Pokemon to modify</param>
         public static void SetEncounterTradeIVs(this PKM pk)
         {

@@ -88,11 +88,8 @@ namespace PKHeX.Core.AutoMod
             );
             var criteria = EncounterCriteria.GetCriteria(set, template.PersonalInfo);
             criteria.ForceMinLevelRange = true;
-            if (regen.EncounterFilters.Count() != 0)
-                encounters = encounters.Where(
-                    enc => BatchEditing.IsFilterMatch(regen.EncounterFilters, enc)
-                );
-
+            if (regen.EncounterFilters.Any())
+                encounters = encounters.Where(enc => BatchEditing.IsFilterMatch(regen.EncounterFilters, enc));
             PKM? last = null;
             foreach (var enc in encounters)
             {
@@ -286,8 +283,7 @@ namespace PKHeX.Core.AutoMod
             var gamelist =
                 (!nativeOnly && AllowHOMETransferGeneration) ? versionlist.OrderByDescending(c => c.GetGeneration()).ToArray() : GetPairedVersions(destVer, versionlist);
             if (PrioritizeGame && !nativeOnly)
-                gamelist =
-                    PrioritizeGameVersion == GameVersion.Any ? PrioritizeVersion(gamelist, SimpleEdits.GetIsland(destVer)) : PrioritizeVersion(gamelist, PrioritizeGameVersion);
+                gamelist = PrioritizeGameVersion == GameVersion.Any ? PrioritizeVersion(gamelist, destVer.GetIsland()) : PrioritizeVersion(gamelist, PrioritizeGameVersion);
             if (template.AbilityNumber == 4 && destVer.GetGeneration() < 8)
                 gamelist = gamelist.Where(z => z.GetGeneration() is not 3 and not 4).ToArray();
             return gamelist;
@@ -341,8 +337,6 @@ namespace PKHeX.Core.AutoMod
         /// Grab a trainer from trainer database with mutated language
         /// </summary>
         /// <param name="regen">Regenset</param>
-        /// <param name="ver">Gameversion for the saved trainerdata</param>
-        /// <param name="gen">Generation of the saved trainerdata</param>
         /// <returns>ITrainerInfo of the trainerdetails</returns>
         private static ITrainerInfo GetTrainer(
             RegenSet regen,
@@ -544,10 +538,7 @@ namespace PKHeX.Core.AutoMod
             // If PID and IV is handled in PreSetPIDIV, don't set it here again and return out
             if (enc is ITeraRaid9)
                 return true;
-            if (enc is EncounterStatic8N
-                    or EncounterStatic8NC
-                    or EncounterStatic8ND
-                    or EncounterStatic8U)
+            if (enc is EncounterStatic8N or EncounterStatic8NC or EncounterStatic8ND or EncounterStatic8U)
                 return true;
             if (enc is IOverworldCorrelation8 o && o.GetRequirement(pk) == OverworldCorrelation8Requirement.MustHave)
                 return true;
@@ -683,7 +674,6 @@ namespace PKHeX.Core.AutoMod
         /// </summary>
         /// <param name="pk"></param>
         /// <param name="apply">boolean to apply or not to apply markings</param>
-        /// <param name="competitive">boolean to apply competitive IVs instead of the default behaviour</param>
         private static void ApplyMarkings(this PKM pk, bool apply = true)
         {
             if (!apply || pk.Format <= 3) // No markings if pk.Format is less than or equal to 3
@@ -903,7 +893,7 @@ namespace PKHeX.Core.AutoMod
                 case EncounterTrade3:
                 case EncounterTrade4PID:
                 case EncounterTrade4RanchGift:
-                    ShowdownEdits.SetEncounterTradeIVs(pk);
+                    pk.SetEncounterTradeIVs();
                     return; // Fixed PID, no need to mutate
                 default:
                     FindPIDIV(pk, method, hpType, set.Shiny, enc, set);
@@ -1322,14 +1312,7 @@ namespace PKHeX.Core.AutoMod
                 return false;
             if ((uint)template.Gender < 2 && template.Gender != pk.Gender) // match gender
                 return false;
-            if (template.Form != pk.Form
-                && !FormInfo.IsFormChangeable(
-                    pk.Species,
-                    pk.Form,
-                    template.Form,
-                    EntityContext.Gen9,
-                    pk.Context)
-            ) // match form -- Toxtricity etc
+            if (template.Form != pk.Form && !FormInfo.IsFormChangeable( pk.Species, pk.Form, template.Form, EntityContext.Gen9, pk.Context)) // match form -- Toxtricity etc
                 return false;
             if (template.Shiny != pk.IsShiny)
                 return false;
@@ -1395,11 +1378,7 @@ namespace PKHeX.Core.AutoMod
                 if (PokeWalkerSeedFail(seed, Method, pk, iterPKM))
                     continue;
                 PIDGenerator.SetValuesFromSeed(pk, Method, seed);
-                if (
-                    pk.AbilityNumber != iterPKM.AbilityNumber
-                    && !compromise
-                    && pk.Nature != iterPKM.Nature
-                )
+                if (pk.AbilityNumber != iterPKM.AbilityNumber && !compromise && pk.Nature != iterPKM.Nature)
                     continue;
                 if (pk.PIDAbility != iterPKM.PIDAbility && !compromise)
                     continue;
@@ -1522,11 +1501,7 @@ namespace PKHeX.Core.AutoMod
             var lvl = pk.CurrentLevel;
             if (pk.Met_Level > lvl)
                 pk.Met_Level = lvl;
-            if (pk.Met_Location is not (Locations.Transfer1
-                    or Locations.Transfer2
-                    or Locations.Transfer3
-                    or Locations.Transfer4
-                    or Locations.GO8))
+            if (pk.Met_Location is not (Locations.Transfer1 or Locations.Transfer2 or Locations.Transfer3 or Locations.Transfer4 or Locations.GO8))
                 return;
             var level = pk.Met_Level;
             if (lvl <= level)
@@ -1746,10 +1721,7 @@ namespace PKHeX.Core.AutoMod
 
             var task = Task.Run(GetLegal);
             var first = task.TimeoutAfter(new TimeSpan(0, 0, 0, Timeout))?.Result;
-            if (first == null)
-                return new AsyncLegalizationResult(template, LegalizationResult.Timeout);
-
-            return first;
+            return first ?? new AsyncLegalizationResult(template, LegalizationResult.Timeout);
         }
 
         /// <summary>

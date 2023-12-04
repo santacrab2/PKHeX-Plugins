@@ -327,9 +327,7 @@ namespace PKHeX.Core.AutoMod
                 var xor = pk.ShinyXor;
                 if (enc is EncounterStatic8U && xor != 1 && shiny != Shiny.AlwaysSquare)
                     continue;
-                if ((shiny == Shiny.AlwaysStar && xor == 1)
-                    || (shiny == Shiny.AlwaysSquare && xor == 0)
-                    || ((shiny is Shiny.Always or Shiny.Random) && xor < 2)) // allow xor1 and xor0 for den shinies
+                if ((shiny == Shiny.AlwaysStar && xor == 1) || (shiny == Shiny.AlwaysSquare && xor == 0) || ((shiny is Shiny.Always or Shiny.Random) && xor < 2)) // allow xor1 and xor0 for den shinies
                     return;
             }
         }
@@ -443,13 +441,17 @@ namespace PKHeX.Core.AutoMod
         {
             bool neverOT = !HistoryVerifier.GetCanOTHandle(enc, pk, enc.Generation);
             if (enc.Generation <= 2)
+            {
                 pk.OT_Friendship = GetBaseFriendship(EntityContext.Gen7, pk.Species, pk.Form); // VC transfers use SM personal info
+            }
             else if (neverOT)
             {
                 pk.OT_Friendship = GetBaseFriendship(enc);
             }
             else
+            {
                 pk.CurrentFriendship = pk.HasMove(218) ? 0 : 255;
+            }
         }
 
         public static void SetBelugaValues(this PKM pk)
@@ -778,7 +780,9 @@ namespace PKHeX.Core.AutoMod
             if (pk is ITechRecord tr and not PA8)
             {
                 if (moves.Length != 0)
+                {
                     tr.SetRecordFlags(moves);
+                }
                 else
                 {
                     var permit = tr.Permit;
@@ -793,7 +797,7 @@ namespace PKHeX.Core.AutoMod
 
             if (pk is IMoveShop8Mastery master)
             {
-                MoveShopRecordApplicator.SetMoveShopFlags(master, pk);
+                master.SetMoveShopFlags(pk);
             }
         }
 

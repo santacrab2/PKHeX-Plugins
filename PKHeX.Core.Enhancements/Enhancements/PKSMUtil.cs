@@ -20,7 +20,7 @@ namespace PKHeX.Core.Enhancements
             var boxcount = (files.Length / 30) + 1;
             var bank = new byte[8 + 4 + 4 + (boxcount * pksmsize * 30)];
             var ctr = 0;
-            var magic = new byte[] { 0x50, 0x4B, 0x53, 0x4D, 0x42, 0x41, 0x4E, 0x4B }; // PKSMBANK
+            var magic = "PKSMBANK"u8.ToArray(); // PKSMBANK
             magic.CopyTo(bank, 0);
             version.CopyTo(bank, 8);
             BitConverter.GetBytes(boxcount).CopyTo(bank, 12); // Number of bank boxes.

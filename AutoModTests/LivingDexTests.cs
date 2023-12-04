@@ -31,14 +31,6 @@ namespace AutoModTests
             RD
         };
 
-        private static Dictionary<GameVersion, GenerateResult> TestLivingDex(LivingDexConfig cfg)
-        {
-            var results = new Dictionary<GameVersion, GenerateResult>();
-            foreach (var s in GetGameVersionsToTest)
-                results[s] = SingleSaveTest(s, cfg);
-            return results;
-        }
-
         private static GenerateResult SingleSaveTest(this GameVersion s, LivingDexConfig cfg)
         {
             var sav = SaveUtil.GetBlankSAV(s, "ALMUT");
@@ -85,7 +77,6 @@ namespace AutoModTests
         [MemberData(nameof(GetLivingDexTestData))]
         public static void VerifyDex(GameVersion game, LivingDexConfig cfg)
         {
-            var dir = Directory.GetCurrentDirectory();
             APILegality.Timeout = 99999;
             Legalizer.EnableEasterEggs = false;
             APILegality.SetAllLegalRibbons = false;
@@ -97,25 +88,6 @@ namespace AutoModTests
                 .BeTrue(
                     $"GameVersion: {game}\n{cfg}\nExpected: {res.Expected}\nGenerated: {res.Generated}"
                 );
-        }
-
-        /// <summary>
-        /// For Partial Debugging in Immediate Window
-        /// </summary>
-        /// <param name="results">partial results</param>
-        /// <param name="includeforms">Check if including forms</param>
-        /// <param name="shiny">Check if forcing shiny</param>
-        private static string Status(
-            Dictionary<GameVersion, GenerateResult> results,
-            LivingDexConfig cfg
-        )
-        {
-            var result =
-                $"IncludeForms: {cfg.IncludeForms}, Shiny: {cfg.SetShiny}, Alpha: {cfg.SetAlpha}, NativeOnly: {cfg.NativeOnly}\n\n";
-            foreach (var (key, (success, expected, generated)) in results)
-                result +=
-                    $"{key} : Complete - {success} | Expected - {expected} | Generated - {generated}\n\n";
-            return result;
         }
 
         private readonly record struct GenerateResult(bool Success, int Expected, int Generated);
@@ -135,25 +107,10 @@ namespace AutoModTests
                 var formCount = personal[s].FormCount;
                 var str = GameInfo.Strings;
                 if (formCount == 1 && cfg.IncludeForms) // Validate through form lists
-                    formCount = (byte)
-                        FormConverter
-                            .GetFormList(
-                                s,
-                                str.types,
-                                str.forms,
-                                GameInfo.GenderSymbolUnicode,
-                                sav.Context
-                            )
-                            .Length;
+                    formCount = (byte) FormConverter.GetFormList(s, str.types, str.forms, GameInfo.GenderSymbolUnicode, sav.Context).Length;
                 for (byte f = 0; f < formCount; f++)
                 {
-                    if (
-                        !personal.IsPresentInGame(s, f)
-                        || FormInfo.IsFusedForm(s, f, sav.Generation)
-                        || FormInfo.IsBattleOnlyForm(s, f, sav.Generation)
-                        || (FormInfo.IsTotemForm(s, f) && sav.Context is not EntityContext.Gen7)
-                        || FormInfo.IsLordForm(s, f, sav.Context)
-                    )
+                    if (!personal.IsPresentInGame(s, f) || FormInfo.IsFusedForm(s, f, sav.Generation) || FormInfo.IsBattleOnlyForm(s, f, sav.Generation) || (FormInfo.IsTotemForm(s, f) && sav.Context is not EntityContext.Gen7) || FormInfo.IsLordForm(s, f, sav.Context))
                         continue;
 
                     var valid = sav.GetRandomEncounter(
@@ -180,7 +137,7 @@ namespace AutoModTests
         }
 
         // const configs
-        private static LivingDexConfig CFG_TFFF =
+        private static readonly LivingDexConfig CFG_TFFF =
             new()
             {
                 IncludeForms = true,
@@ -188,7 +145,7 @@ namespace AutoModTests
                 SetAlpha = false,
                 NativeOnly = false
             };
-        private static LivingDexConfig CFG_TTFF =
+        private readonly static LivingDexConfig CFG_TTFF =
             new()
             {
                 IncludeForms = true,
@@ -196,7 +153,7 @@ namespace AutoModTests
                 SetAlpha = false,
                 NativeOnly = false
             };
-        private static LivingDexConfig CFG_TTTF =
+        private readonly static LivingDexConfig CFG_TTTF =
             new()
             {
                 IncludeForms = true,
@@ -204,7 +161,7 @@ namespace AutoModTests
                 SetAlpha = true,
                 NativeOnly = false
             };
-        private static LivingDexConfig CFG_TTTT =
+        private readonly static LivingDexConfig CFG_TTTT =
             new()
             {
                 IncludeForms = true,
@@ -213,7 +170,7 @@ namespace AutoModTests
                 NativeOnly = true
             };
 
-        private static LivingDexConfig CFG_TFTF =
+        private readonly static LivingDexConfig CFG_TFTF =
             new()
             {
                 IncludeForms = true,
@@ -221,7 +178,7 @@ namespace AutoModTests
                 SetAlpha = true,
                 NativeOnly = false
             };
-        private static LivingDexConfig CFG_TFFT =
+        private readonly static LivingDexConfig CFG_TFFT =
             new()
             {
                 IncludeForms = true,
@@ -229,7 +186,7 @@ namespace AutoModTests
                 SetAlpha = false,
                 NativeOnly = true
             };
-        private static LivingDexConfig CFG_TFTT =
+        private readonly static LivingDexConfig CFG_TFTT =
             new()
             {
                 IncludeForms = true,
@@ -237,7 +194,7 @@ namespace AutoModTests
                 SetAlpha = true,
                 NativeOnly = true
             };
-        private static LivingDexConfig CFG_TTFT =
+        private readonly static LivingDexConfig CFG_TTFT =
             new()
             {
                 IncludeForms = true,
@@ -246,7 +203,7 @@ namespace AutoModTests
                 NativeOnly = true
             };
 
-        private static LivingDexConfig CFG_FTTT =
+        private readonly static LivingDexConfig CFG_FTTT =
             new()
             {
                 IncludeForms = false,
@@ -254,7 +211,7 @@ namespace AutoModTests
                 SetAlpha = true,
                 NativeOnly = true
             };
-        private static LivingDexConfig CFG_FFTT =
+        private readonly static LivingDexConfig CFG_FFTT =
             new()
             {
                 IncludeForms = false,
@@ -262,7 +219,7 @@ namespace AutoModTests
                 SetAlpha = true,
                 NativeOnly = true
             };
-        private static LivingDexConfig CFG_FFFT =
+        private readonly static LivingDexConfig CFG_FFFT =
             new()
             {
                 IncludeForms = false,
@@ -270,7 +227,7 @@ namespace AutoModTests
                 SetAlpha = false,
                 NativeOnly = true
             };
-        private static LivingDexConfig CFG_FFFF =
+        private readonly static LivingDexConfig CFG_FFFF =
             new()
             {
                 IncludeForms = false,
@@ -279,7 +236,7 @@ namespace AutoModTests
                 NativeOnly = false
             };
 
-        private static LivingDexConfig CFG_FTFT =
+        private readonly static LivingDexConfig CFG_FTFT =
             new()
             {
                 IncludeForms = false,
@@ -287,7 +244,7 @@ namespace AutoModTests
                 SetAlpha = false,
                 NativeOnly = true
             };
-        private static LivingDexConfig CFG_FTTF =
+        private readonly static LivingDexConfig CFG_FTTF =
             new()
             {
                 IncludeForms = false,
@@ -295,7 +252,7 @@ namespace AutoModTests
                 SetAlpha = true,
                 NativeOnly = false
             };
-        private static LivingDexConfig CFG_FTFF =
+        private readonly static LivingDexConfig CFG_FTFF =
             new()
             {
                 IncludeForms = false,
@@ -303,7 +260,7 @@ namespace AutoModTests
                 SetAlpha = false,
                 NativeOnly = false
             };
-        private static LivingDexConfig CFG_FFTF =
+        private readonly static LivingDexConfig CFG_FFTF =
             new()
             {
                 IncludeForms = false,

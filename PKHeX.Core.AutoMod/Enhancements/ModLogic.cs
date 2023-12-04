@@ -47,7 +47,6 @@ namespace PKHeX.Core.AutoMod
         /// Gets a living dex (one per species, not every form)
         /// </summary>
         /// <param name="sav">Save File to receive the generated <see cref="PKM"/>.</param>
-        /// <param name="speciesIDs">Species IDs to generate</param>
         /// <returns>Consumable list of newly generated <see cref="PKM"/> data.</returns>
         public static IEnumerable<PKM> GenerateLivingDex(this SaveFile sav) =>
             sav.GenerateLivingDex(cfg);
@@ -56,11 +55,6 @@ namespace PKHeX.Core.AutoMod
         /// Gets a living dex (one per species, not every form)
         /// </summary>
         /// <param name="sav">Save File to receive the generated <see cref="PKM"/>.</param>
-        /// <param name="speciesIDs">Species IDs to generate</param>
-        /// <param name="includeforms">Include all forms in the resulting list of data</param>
-        /// <param name="shiny"></param>
-        /// <param name="alpha"></param>
-        /// <param name="attempts"></param>
         /// <returns>Consumable list of newly generated <see cref="PKM"/> data.</returns>
         public static IEnumerable<PKM> GenerateLivingDex(this SaveFile sav, LivingDexConfig cfg)
         {
@@ -156,7 +150,6 @@ namespace PKHeX.Core.AutoMod
         /// <param name="form">Form to generate; if left null, picks first encounter</param>
         /// <param name="shiny"></param>
         /// <param name="alpha"></param>
-        /// <param name="attempt"></param>
         /// <param name="pk">Result legal pkm</param>
         /// <returns>True if a valid result was generated, false if the result should be ignored.</returns>
         public static bool GetRandomEncounter(
@@ -178,7 +171,6 @@ namespace PKHeX.Core.AutoMod
         /// <param name="form">Form to generate; if left null, picks first encounter</param>
         /// <param name="shiny"></param>
         /// <param name="alpha"></param>
-        /// <param name="attempt"></param>
         /// <param name="pk">Result legal pkm</param>
         /// <returns>True if a valid result was generated, false if the result should be ignored.</returns>
         public static bool GetRandomEncounter(
@@ -209,7 +201,6 @@ namespace PKHeX.Core.AutoMod
         /// <param name="form">Form to generate; if left null, picks first encounter</param>
         /// <param name="shiny"></param>
         /// <param name="alpha"></param>
-        /// <param name="attempt"></param>
         /// <returns>Result legal pkm, null if data should be ignored.</returns>
         private static PKM? GetRandomEncounter(
             PKM blank,
