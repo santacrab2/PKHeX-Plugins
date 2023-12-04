@@ -8,53 +8,29 @@ using System.Threading;
 
 namespace PKHeX.Core.Injection
 {
-    public class ReadMemRequest
+    public class ReadMemRequest(bool callback = true, string? fn = null)
     {
-        public readonly string? FileName;
-        public readonly bool IsCallback;
-
-        public ReadMemRequest(bool callback = true, string? fn = null)
-        {
-            FileName = fn;
-            IsCallback = callback;
-        }
+        public readonly string? FileName = fn;
+        public readonly bool IsCallback = callback;
     }
 
-    public class DataReadyWaiting
+    public class DataReadyWaiting(byte[] data, DataReadyWaiting.DataHandler handler, object? arguments)
     {
-        public readonly byte[] Data;
-        public object? Arguments;
+        public readonly byte[] Data = data;
+        public object? Arguments = arguments;
         public delegate void DataHandler(object dataArguments);
-        public readonly DataHandler Handler;
-
-        public DataReadyWaiting(byte[] data, DataHandler handler, object? arguments)
-        {
-            Data = data;
-            Handler = handler;
-            Arguments = arguments;
-        }
+        public readonly DataHandler Handler = handler;
     }
 
-    public class DataReadyEventArgs : EventArgs
+    public class DataReadyEventArgs(uint seq, byte[] data) : EventArgs
     {
-        public readonly uint Seq;
-        public readonly byte[] Data;
-
-        public DataReadyEventArgs(uint seq, byte[] data)
-        {
-            Seq = seq;
-            Data = data;
-        }
+        public readonly uint Seq = seq;
+        public readonly byte[] Data = data;
     }
 
-    public class InfoReadyEventArgs : EventArgs
+    public class InfoReadyEventArgs(string info) : EventArgs
     {
-        public readonly string Info;
-
-        public InfoReadyEventArgs(string info)
-        {
-            Info = info;
-        }
+        public readonly string Info = info;
     }
 
     public sealed class NTR
@@ -77,8 +53,8 @@ namespace PKHeX.Core.Injection
         public event EventHandler Connected = null!;
         public event EventHandler<InfoReadyEventArgs> InfoReady = null!;
 
-        private readonly Dictionary<uint, DataReadyWaiting> _waitingForData = new();
-        private readonly Dictionary<uint, ReadMemRequest> _pendingReadMem = new();
+        private readonly Dictionary<uint, DataReadyWaiting> _waitingForData = [];
+        private readonly Dictionary<uint, ReadMemRequest> _pendingReadMem = [];
 
         private delegate void LogDelegate(string l);
         private readonly LogDelegate _delLastLog;

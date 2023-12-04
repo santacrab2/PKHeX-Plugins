@@ -5,10 +5,10 @@ using System.Linq;
 
 namespace PKHeX.Core.Injection
 {
-    public class LPBasic : InjectionBase
+    public class LPBasic(LiveHeXVersion lv, bool useCache) : InjectionBase(lv, useCache)
     {
         private static readonly LiveHeXVersion[] SupportedVersions =
-        {
+        [
             LiveHeXVersion.SWSH_v132,
             LiveHeXVersion.SWSH_v121,
             LiveHeXVersion.SWSH_v111,
@@ -18,12 +18,12 @@ namespace PKHeX.Core.Injection
             LiveHeXVersion.US_v120,
             LiveHeXVersion.UM_v120,
             LiveHeXVersion.SM_v120
-        };
+        ];
 
         public static LiveHeXVersion[] GetVersions() => SupportedVersions;
 
         public static readonly BlockData[] Blocks_Rigel2 =
-        {
+        [
             new()
             {
                 Name = "KMyStatus",
@@ -101,7 +101,7 @@ namespace PKHeX.Core.Injection
                 SCBKey = 0x3C9366F0,
                 Offset = 0x45069120
             },
-        };
+        ];
 
         // LiveHexVersion -> Blockname -> List of <SCBlock Keys, OffsetValues>
         public static readonly Dictionary<LiveHeXVersion, BlockData[]> SCBlocks =
@@ -118,9 +118,6 @@ namespace PKHeX.Core.Injection
                 { "Pokedex Armor", "B_OpenPokedex_Click" },
                 { "Pokedex Crown", "B_OpenPokedex_Click" },
             };
-
-        public LPBasic(LiveHeXVersion lv, bool useCache)
-            : base(lv, useCache) { }
 
         public override byte[] ReadBox(PokeSysBotMini psb, int box, int len, List<byte[]> allpkm)
         {
@@ -190,7 +187,7 @@ namespace PKHeX.Core.Injection
                     ram.CopyTo(scb.Data, 0);
                     if (read == null)
                     {
-                        read = new List<byte[]> { ram };
+                        read = [ram];
                     }
                     else
                     {

@@ -54,7 +54,7 @@ namespace AutoModPlugins
 
             if (PromptForImport)
             {
-                for (int i = 0; i < info.Sets.Count; )
+                for (int i = 0; i < info.Sets.Count;)
                 {
                     if (
                         DialogResult.Yes

@@ -6,10 +6,10 @@ using System.Reflection;
 
 namespace PKHeX.Core.Injection
 {
-    public class LPBDSP : InjectionBase
+    public class LPBDSP(LiveHeXVersion lv, bool useCache) : InjectionBase(lv, useCache)
     {
         private static readonly LiveHeXVersion[] BrilliantDiamond =
-        {
+        [
             LiveHeXVersion.BD_v100,
             LiveHeXVersion.BD_v110,
             LiveHeXVersion.BD_v111,
@@ -17,9 +17,9 @@ namespace PKHeX.Core.Injection
             LiveHeXVersion.BDSP_v113,
             LiveHeXVersion.BDSP_v120,
             LiveHeXVersion.BD_v130
-        };
+        ];
         private static readonly LiveHeXVersion[] ShiningPearl =
-        {
+        [
             LiveHeXVersion.SP_v100,
             LiveHeXVersion.SP_v110,
             LiveHeXVersion.SP_v111,
@@ -27,7 +27,7 @@ namespace PKHeX.Core.Injection
             LiveHeXVersion.BDSP_v113,
             LiveHeXVersion.BDSP_v120,
             LiveHeXVersion.SP_v130
-        };
+        ];
         private static readonly LiveHeXVersion[] SupportedVersions = ArrayUtil.ConcatAll(
             BrilliantDiamond,
             ShiningPearl
@@ -71,10 +71,6 @@ namespace PKHeX.Core.Injection
             .GetAssembly(typeof(ICustomBlock))
             .GetTypes()
             .Where(t => typeof(ICustomBlock).IsAssignableFrom(t) && !t.IsInterface);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-
-        public LPBDSP(LiveHeXVersion lv, bool useCache)
-            : base(lv, useCache) { }
 
         private static ulong[] GetPokemonPointers(PokeSysBotMini psb, int box)
         {
@@ -423,7 +419,7 @@ namespace PKHeX.Core.Injection
 
                     var funcout = (byte[]?)m.Invoke(null, new object[] { psb });
                     if (funcout is not null)
-                        read = new List<byte[]> { funcout };
+                        read = [funcout];
                     return true;
                 }
                 return false;
@@ -442,7 +438,7 @@ namespace PKHeX.Core.Injection
                         return false;
 
                     funcout.CopyTo(sb.Data, sb.Offset);
-                    read = new List<byte[]> { funcout };
+                    read = [funcout];
                 }
                 else
                 {

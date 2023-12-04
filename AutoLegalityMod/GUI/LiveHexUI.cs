@@ -155,7 +155,7 @@ namespace AutoModPlugins
                     break;
 
                 default:
-                    dest = Array.Empty<byte>();
+                    dest = [];
                     tdata = LPBasic.GetTrainerData;
                     break;
             }
@@ -287,9 +287,7 @@ namespace AutoModPlugins
             }
 
             var saveName = GameInfo.GetVersionName((GameVersion)SAV.SAV.Game);
-            var msg =
-                $"Could not find a compatible game version while establishing an NTR connection.\n"
-                + $"Save file loaded: Pokémon {saveName}";
+            var msg = "Could not find a compatible game version while establishing an NTR connection.\n" + $"Save file loaded: Pokémon {saveName}";
             return (LiveHeXValidation.GameVersion, msg, LiveHeXVersion.Unknown);
         }
 
@@ -309,7 +307,7 @@ namespace AutoModPlugins
                 var msg =
                     $"Incompatible {(nx.Protocol is InjectorCommunicationType.SocketNetwork ? "sys-botbase" : "usb-botbase")} version.\n"
                     + $"Expected version {InjectionBase.BotbaseVersion} or greater, and current version is {version}.\n\n"
-                    + $"Please download and install the latest version by clicking the \"Update\" button.";
+                    + "Please download and install the latest version by clicking the \"Update\" button.";
 
                 return (LiveHeXValidation.Botbase, msg, LiveHeXVersion.Unknown);
             }
@@ -328,7 +326,7 @@ namespace AutoModPlugins
                 var msg =
                     $"Detected game: {gameName} ({gameVer})\n"
                     + $"Save file loaded: Pokémon {saveName}\n\n"
-                    + $"Have you selected the correct blank save in PKHeX?";
+                    + "Have you selected the correct blank save in PKHeX?";
 
                 if (lv is not LiveHeXVersion.Unknown)
                     gameVer = lv.ToString();
@@ -339,7 +337,7 @@ namespace AutoModPlugins
             {
                 var msg =
                     $"Unsupported version for {gameName}\n\n"
-                    + $"Latest supported version is {versions.First()}.\n"
+                    + $"Latest supported version is {versions[0]}.\n"
                     + $"Earliest supported version is {versions.Last()}.\n"
                     + $"Detected version is {gameVer}.";
                 return (LiveHeXValidation.GameVersion, msg, lv);
@@ -373,13 +371,11 @@ namespace AutoModPlugins
                         && pkm.Language != (int)LanguageID.UNUSED_6
                     )
                 );
-            if (
-                !_settings.EnableDevMode
+            return !_settings.EnableDevMode
                 && !valid
                 && InjectionBase.CheckRAMShift(Remote.Bot, out string err)
-            )
-                return (LiveHeXValidation.RAMShift, err, lv);
-            return (LiveHeXValidation.None, "", lv);
+                ? ((LiveHeXValidation, string, LiveHeXVersion))(LiveHeXValidation.RAMShift, err, lv)
+                : ((LiveHeXValidation, string, LiveHeXVersion))(LiveHeXValidation.None, "", lv);
         }
 
         private void B_Disconnect_Click(object sender, EventArgs e)
@@ -471,9 +467,7 @@ namespace AutoModPlugins
         {
             if (RB_Main.Checked)
                 return RWMethod.Main;
-            if (RB_Absolute.Checked)
-                return RWMethod.Absolute;
-            return RWMethod.Heap;
+            return RB_Absolute.Checked ? RWMethod.Absolute : RWMethod.Heap;
         }
 
         private void B_ReadRAM_Click(object sender, EventArgs e)
@@ -563,10 +557,10 @@ namespace AutoModPlugins
         {
             if (Remote.Bot.Injector is LPBasic)
             {
-                if (!LPBasic.SCBlocks.ContainsKey(lv))
+                if (!LPBasic.SCBlocks.TryGetValue(lv, out BlockData[]? value))
                     return new List<string>();
 
-                var blks = LPBasic.SCBlocks[lv].Select(z => z.Display).Distinct().OrderBy(z => z);
+                var blks = value.Select(z => z.Display).Distinct().OrderBy(z => z);
                 return blks;
             }
 
@@ -1045,7 +1039,7 @@ namespace AutoModPlugins
                             );
                         return false;
                     }
-                    ;
+
                 case LiveHeXValidation.BlankSAV
                 or LiveHeXValidation.GameVersion:
 
@@ -1063,7 +1057,7 @@ namespace AutoModPlugins
                             );
                         return false;
                     }
-                    ;
+
                 case LiveHeXValidation.RAMShift:
 
                     {
@@ -1078,9 +1072,7 @@ namespace AutoModPlugins
                             );
                         return false;
                     }
-                    ;
             }
-            ;
 
             return true;
         }

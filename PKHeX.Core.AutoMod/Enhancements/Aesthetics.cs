@@ -1039,9 +1039,7 @@ namespace PKHeX.Core.AutoMod
             if (ballstr is "Feather" or "Wing" or "Jet" or "Leaden" or "Gigaton" or "Origin")
                 ballstr = "LA" + ballstr;
             var valid = Enum.TryParse(ballstr, out Ball ball);
-            if (valid)
-                return ball;
-            return Ball.None;
+            return valid ? ball : Ball.None;
         }
 
         public static void ApplyShinyBall(PKM pk)
@@ -1075,10 +1073,7 @@ namespace PKHeX.Core.AutoMod
                 return Shiny.AlwaysStar;
             if (value.Equals("Yes", StringComparison.OrdinalIgnoreCase))
                 return Shiny.Always;
-            if (value.Equals("No", StringComparison.OrdinalIgnoreCase))
-                return Shiny.Never;
-
-            return Shiny.Random;
+            return value.Equals("No", StringComparison.OrdinalIgnoreCase) ? Shiny.Never : Shiny.Random;
         }
 
         public static LanguageID? GetLanguageId(string value)
@@ -1086,9 +1081,7 @@ namespace PKHeX.Core.AutoMod
             var valid = Enum.TryParse(value, out LanguageID lang);
             if (!valid)
                 return null;
-            if (lang is LanguageID.Hacked or LanguageID.UNUSED_6)
-                return LanguageID.English;
-            return lang;
+            return lang is LanguageID.Hacked or LanguageID.UNUSED_6 ? LanguageID.English : lang;
         }
 
         /// <summary>
@@ -1097,12 +1090,12 @@ namespace PKHeX.Core.AutoMod
         private static readonly Dictionary<PersonalColor, Ball[]> BallColors =
             new()
             {
-                [Red] = new[] { LAOrigin, Cherish, Repeat, Fast, Heal, Great, Dream, Lure },
-                [Blue] = new[] { Dive, LAFeather, Net, LAGreat, Great, Beast, Lure, LAJet },
-                [Yellow] = new[] { Level, LAUltra, Ultra, Repeat, Quick, Moon },
-                [Green] = new[] { Safari, Friend, Nest, Dusk, Strange },
-                [Black] = new[]
-                {
+                [Red] = [LAOrigin, Cherish, Repeat, Fast, Heal, Great, Dream, Lure],
+                [Blue] = [Dive, LAFeather, Net, LAGreat, Great, Beast, Lure, LAJet],
+                [Yellow] = [Level, LAUltra, Ultra, Repeat, Quick, Moon],
+                [Green] = [Safari, Friend, Nest, Dusk, Strange],
+                [Black] =
+                [
                     Luxury,
                     LAGigaton,
                     LALeaden,
@@ -1113,12 +1106,12 @@ namespace PKHeX.Core.AutoMod
                     Moon,
                     Net,
                     Beast
-                },
-                [Brown] = new[] { Level, Heavy },
-                [Purple] = new[] { Master, Love, Dream, Heal },
-                [Gray] = new[] { Heavy, LAGigaton, LALeaden, LAHeavy, Premier, Luxury },
-                [White] = new[] { Premier, LAWing, LAJet, Timer, Luxury, Ultra },
-                [Pink] = new[] { Love, Dream, Heal },
+                ],
+                [Brown] = [Level, Heavy],
+                [Purple] = [Master, Love, Dream, Heal],
+                [Gray] = [Heavy, LAGigaton, LALeaden, LAHeavy, Premier, Luxury],
+                [White] = [Premier, LAWing, LAJet, Timer, Luxury, Ultra],
+                [Pink] = [Love, Dream, Heal],
             };
 
         public static int ApplyFirstLegalBall(PKM pkm, IEnumerable<Ball> balls)

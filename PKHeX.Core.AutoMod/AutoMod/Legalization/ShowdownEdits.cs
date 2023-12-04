@@ -58,7 +58,7 @@ namespace PKHeX.Core.AutoMod
             var la2 = new LegalityAnalysis(pk);
             var enc1 = la.EncounterMatch;
             var enc2 = la2.EncounterMatch;
-            if (((!ReferenceEquals(enc1, enc2) && enc1 is not EncounterEgg) || la2.Results.Any(z =>(z.Identifier == CheckIdentifier.Nature || z.Identifier == CheckIdentifier.Encounter) && !z.Valid)) && enc is not EncounterEgg)
+            if (((!ReferenceEquals(enc1, enc2) && enc1 is not EncounterEgg) || la2.Results.Any(z => (z.Identifier == CheckIdentifier.Nature || z.Identifier == CheckIdentifier.Encounter) && !z.Valid)) && enc is not EncounterEgg)
                 pk.Nature = orig;
             if (pk.Format >= 8 && pk.StatNature != pk.Nature && pk.StatNature is 0 or 6 or 18 or >= 24) // Only Serious Mint for Neutral Natures
                 pk.StatNature = (int)Nature.Serious;
@@ -166,7 +166,7 @@ namespace PKHeX.Core.AutoMod
             if (set.Nickname.Length == 0 && finallang == currentlang && !evolutionRequired)
                 return;
 
-            if (enc is IFixedTrainer { IsFixedTrainer: true } ft)
+            if (enc is IFixedTrainer { IsFixedTrainer: true })
             {
                 // Set this before hand incase it is true. Will early return if it is also IFixedNickname
                 // Wait for PKHeX to expose this instead of using reflection
@@ -223,10 +223,7 @@ namespace PKHeX.Core.AutoMod
                 return IsValidGenderMismatch(pkm);
 
             // check for mixed->fixed gender incompatibility by checking the gender of the original species
-            if (SpeciesCategory.IsFixedGenderFromDual(pkm.Species))
-                return IsValidFixedGenderFromBiGender(pkm, enc.Species);
-
-            return true;
+            return !SpeciesCategory.IsFixedGenderFromDual(pkm.Species) || IsValidFixedGenderFromBiGender(pkm, enc.Species);
         }
 
         /// <summary>

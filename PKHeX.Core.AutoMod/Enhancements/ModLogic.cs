@@ -58,7 +58,7 @@ namespace PKHeX.Core.AutoMod
         /// <returns>Consumable list of newly generated <see cref="PKM"/> data.</returns>
         public static IEnumerable<PKM> GenerateLivingDex(this SaveFile sav, LivingDexConfig cfg)
         {
-            List<PKM> pklist = new();
+            List<PKM> pklist = [];
             var tr = APILegality.UseTrainerData
                 ? TrainerSettings.GetSavedTrainerData(
                     sav.Version,
@@ -111,35 +111,14 @@ namespace PKHeX.Core.AutoMod
             bool nativeOnly
         )
         {
-            if (
-                tr.GetRandomEncounter(species, form, shiny, alpha, nativeOnly, out var pk)
-                && pk != null
-                && pk.Species > 0
-            )
+            if (tr.GetRandomEncounter(species, form, shiny, alpha, nativeOnly, out var pk) && pk?.Species > 0)
             {
                 pk.Heal();
                 return pk;
             }
-            if (
-                sav is SAV2
-                && GetRandomEncounter(
-                    new SAV1(GameVersion.Y)
-                    {
-                        Language = tr.Language,
-                        OT = tr.OT,
-                        TID16 = tr.TID16
-                    },
-                    species,
-                    form,
-                    shiny,
-                    false,
-                    nativeOnly,
-                    out var pkm
-                )
-                && pkm is PK1 pk1
-            )
-                return pk1.ConvertToPK2();
-            return null;
+            return sav is SAV2 && GetRandomEncounter(new SAV1(GameVersion.Y) { Language = tr.Language, OT = tr.OT, TID16 = tr.TID16 }, species, form, shiny, false, nativeOnly, out var pkm) && pkm is PK1 pk1
+                ? pk1.ConvertToPK2()
+                : (PKM?)null;
         }
 
         /// <summary>
@@ -270,9 +249,7 @@ namespace PKHeX.Core.AutoMod
                 success = LegalizationResult.Regenerated;
             }
 
-            if (success == LegalizationResult.Regenerated)
-                return pk;
-            return null;
+            return success == LegalizationResult.Regenerated ? pk : null;
         }
 
         private static bool GetIsFormInvalid(this PKM pk, ITrainerInfo tr, byte form)

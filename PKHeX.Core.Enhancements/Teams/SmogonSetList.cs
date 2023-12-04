@@ -18,21 +18,21 @@ namespace PKHeX.Core.Enhancements
         public readonly string Page;
         public readonly bool LetsGo;
         public readonly bool BDSP;
-        public readonly List<string> SetFormat = new();
-        public readonly List<string> SetName = new();
-        public readonly List<string> SetConfig = new();
-        public readonly List<string> SetText = new();
-        public readonly List<ShowdownSet> Sets = new();
+        public readonly List<string> SetFormat = [];
+        public readonly List<string> SetName = [];
+        public readonly List<string> SetConfig = [];
+        public readonly List<string> SetText = [];
+        public readonly List<ShowdownSet> Sets = [];
 
         public static readonly string[] IllegalFormats =
-        {
+        [
             "Almost Any Ability", // Generates illegal abilities
             "BH", // Balanced Hackmons
             "Mix and Mega", // Assumes pokemon can mega evolve that cannot
             "STABmons", // Generates illegal movesets
             "National Dex", // Adds Megas to Generation VIII
             "National Dex AG" // Adds Megas to Generation VIII
-        };
+        ];
 
         public string Summary => AlertText(ShowdownSpeciesName, SetText.Count, GetTitles());
 
@@ -63,9 +63,7 @@ namespace PKHeX.Core.Enhancements
 
         private static string GetShowdownName(string species, string form)
         {
-            if (string.IsNullOrWhiteSpace(form) || ShowdownUtil.IsInvalidForm(form))
-                return species;
-            return $"{species}-{form}";
+            return string.IsNullOrWhiteSpace(form) || ShowdownUtil.IsInvalidForm(form) ? species : $"{species}-{form}";
         }
 
         private void LoadSetsFromPage()
@@ -164,7 +162,7 @@ namespace PKHeX.Core.Enhancements
             return string.Join(Environment.NewLine, result);
         }
 
-        private static readonly string[] statNames = { "HP", "Atk", "Def", "SpA", "SpD", "Spe" };
+        private static readonly string[] statNames = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
 
         private static IEnumerable<string> GetSetLines(
             string set,
@@ -180,9 +178,8 @@ namespace PKHeX.Core.Enhancements
             TryGetToken(set, "\"natures\":[\"", "\"", out var nature);
             TryGetToken(set, "\"teratypes\":[\"", "\"", out var teratype);
 
-            if (teratype != null && teratype.StartsWith(']'))
+            if (teratype?.StartsWith(']') == true)
                 teratype = null;
-
             var evs = ParseEVIVs(evstr, false);
             var ivs = ParseEVIVs(ivstr, true);
             var ability = set[1] == ']' ? string.Empty : set.Split('\"')[1];
@@ -279,8 +276,8 @@ namespace PKHeX.Core.Enhancements
 
         private static string[] ParseEVIVs(string liststring, bool iv)
         {
-            string[] ivdefault = { "31", "31", "31", "31", "31", "31" };
-            string[] evdefault = { "0", "0", "0", "0", "0", "0" };
+            string[] ivdefault = ["31", "31", "31", "31", "31", "31"];
+            string[] evdefault = ["0", "0", "0", "0", "0", "0"];
             var val = iv ? ivdefault : evdefault;
             if (string.IsNullOrWhiteSpace(liststring))
                 return val;
@@ -378,16 +375,14 @@ namespace PKHeX.Core.Enhancements
         }
 
         internal static readonly HashSet<int> Totem_Alolan =
-            new()
-            {
+            [
                 020, // Raticate (Normal, Alolan, Totem)
                 105, // Marowak (Normal, Alolan, Totem)
                 778, // Mimikyu (Normal, Busted, Totem, Totem_Busted)
-            };
+            ];
 
         internal static readonly HashSet<int> Totem_USUM =
-            new()
-            {
+            [
                 020, // Raticate
                 735, // Gumshoos
                 758, // Salazzle
@@ -399,7 +394,7 @@ namespace PKHeX.Core.Enhancements
                 752, // Araquanid
                 777, // Togedemaru
                 743, // Ribombee
-            };
+            ];
 
         private static string GetURL(string speciesName, string form, string baseURL)
         {
@@ -430,7 +425,7 @@ namespace PKHeX.Core.Enhancements
                 if (titles.TryGetValue(format, out var list))
                     list.Add(name);
                 else
-                    titles.Add(format, new List<string> { name });
+                    titles.Add(format, [name]);
             }
 
             return titles;

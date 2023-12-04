@@ -76,7 +76,7 @@ namespace PKHeX.Core.AutoMod
             );
 
             // Move checks
-            List<IEnumerable<ushort>> move_combinations = new();
+            List<IEnumerable<ushort>> move_combinations = [];
             for (int i = count; i >= 1; i--)
                 move_combinations.AddRange(GetKCombs(moves, i));
 
@@ -109,7 +109,7 @@ namespace PKHeX.Core.AutoMod
             // All moves possible, get encounters
             failed.ApplySetDetails(set);
             failed.SetMoves(original_moves);
-            failed.SetRecordFlags(Array.Empty<ushort>());
+            failed.SetRecordFlags([]);
 
             var encounters = EncounterMovesetGenerator
                 .GenerateEncounters(pk: failed, moves: original_moves, gamelist)
@@ -188,7 +188,7 @@ namespace PKHeX.Core.AutoMod
             GameVersion[] gamelist
         )
         {
-            ushort[] successful_combination = Array.Empty<ushort>();
+            ushort[] successful_combination = [];
             foreach (var c in move_combinations)
             {
                 var combination = c.ToArray();
@@ -199,7 +199,7 @@ namespace PKHeX.Core.AutoMod
                     .ToArray();
                 blank.ApplySetDetails(set);
                 blank.SetMoves(new_moves);
-                blank.SetRecordFlags(Array.Empty<ushort>());
+                blank.SetRecordFlags([]);
 
                 if (sav.Generation <= 2)
                     blank.EXP = 0; // no relearn moves in gen 1/2 so pass level 1 to generator

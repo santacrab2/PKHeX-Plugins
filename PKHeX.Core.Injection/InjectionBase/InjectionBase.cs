@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace PKHeX.Core.Injection
 {
-    public abstract class InjectionBase : PointerCache
+    public abstract class InjectionBase(LiveHeXVersion lv, bool useCache) : PointerCache(lv, useCache)
     {
         public const decimal BotbaseVersion = 2.3m;
 
@@ -112,10 +112,7 @@ namespace PKHeX.Core.Injection
                 },
             };
 
-        public virtual Dictionary<string, string> SpecialBlocks { get; } = new();
-
-        public InjectionBase(LiveHeXVersion lv, bool useCache)
-            : base(lv, useCache) { }
+        public virtual Dictionary<string, string> SpecialBlocks { get; } = [];
 
         protected static InjectionBase GetInjector(LiveHeXVersion version, bool useCache)
         {
@@ -125,19 +122,19 @@ namespace PKHeX.Core.Injection
                 return new LPBDSP(version, useCache);
             if (LPPointer.GetVersions().Contains(version))
                 return new LPPointer(version, useCache);
-            if (LPBasic.GetVersions().Contains(version))
-                return new LPBasic(version, useCache);
-            throw new NotImplementedException("Unknown LiveHeXVersion.");
+            return LPBasic.GetVersions().Contains(version)
+                ? (InjectionBase)new LPBasic(version, useCache)
+                : throw new NotImplementedException("Unknown LiveHeXVersion.");
         }
 
         public virtual byte[] ReadBox(PokeSysBotMini psb, int box, int len, List<byte[]> allpkm)
         {
-            return Array.Empty<byte>();
+            return [];
         }
 
         public virtual byte[] ReadSlot(PokeSysBotMini psb, int box, int slot)
         {
-            return Array.Empty<byte>();
+            return [];
         }
 
         public virtual void SendBox(PokeSysBotMini psb, byte[] boxData, int box) { }
@@ -151,7 +148,8 @@ namespace PKHeX.Core.Injection
             string block,
             byte[] data,
             object sb
-        ) { }
+        )
+        { }
 
         public virtual bool ReadBlockFromString(
             PokeSysBotMini psb,

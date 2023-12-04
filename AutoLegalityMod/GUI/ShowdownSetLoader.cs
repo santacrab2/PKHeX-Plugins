@@ -19,13 +19,13 @@ namespace AutoModPlugins
         public static IPKMView PKMEditor { private get; set; } = null!;
 
         private static readonly EncounterTypeGroup[] EncounterPriority =
-        {
+        [
             EncounterTypeGroup.Egg,
             EncounterTypeGroup.Static,
             EncounterTypeGroup.Trade,
             EncounterTypeGroup.Slot,
             EncounterTypeGroup.Mystery,
-        };
+        ];
 
         /// <summary>
         /// Imports <see cref="ShowdownSet"/> list(s) originating from a concatenated list.
@@ -108,7 +108,7 @@ namespace AutoModPlugins
             {
                 var errorstr =
                     "The PKHeX-Plugins version does not match the PKHeX version.\n\n"
-                    + $"Refer to the Wiki to fix this error.\n\n"
+                    + "Refer to the Wiki to fix this error.\n\n"
                     + $"The current ALM Version is {ALMVersion.Versions.AlmVersionCurrent}\n"
                     + $"The current PKHeX Version is {ALMVersion.Versions.CoreVersionCurrent}";
 

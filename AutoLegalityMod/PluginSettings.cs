@@ -102,14 +102,13 @@ namespace AutoModPlugins
         [Category(Legality)]
         [Description("Defines the order in which Pokémon encounters are prioritized")]
         public List<EncounterTypeGroup> PrioritizeEncounters { get; set; } =
-            new()
-            {
+            [
                 EncounterTypeGroup.Egg,
                 EncounterTypeGroup.Static,
                 EncounterTypeGroup.Trade,
                 EncounterTypeGroup.Slot,
                 EncounterTypeGroup.Mystery
-            };
+            ];
 
         [Category(Legality)]
         [Description(

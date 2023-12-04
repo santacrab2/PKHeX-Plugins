@@ -17,11 +17,11 @@ namespace PKHeX.Core.AutoMod
         private static readonly SimpleTrainerInfo DefaultFallback8 = new(GameVersion.SW);
         private static readonly SimpleTrainerInfo DefaultFallback7 = new(GameVersion.UM);
         private static readonly GameVersion[] FringeVersions =
-        {
+        [
             GameVersion.GG,
             GameVersion.BDSP,
             GameVersion.PLA
-        };
+        ];
 
         public static string DefaultOT { get; set; } = "ALM";
         public static ushort DefaultTID16 { get; set; } = 54321; // reverse of PKHeX defaults
@@ -30,9 +30,7 @@ namespace PKHeX.Core.AutoMod
         public static ITrainerInfo DefaultFallback(int gen = 8, LanguageID? lang = null)
         {
             var fallback = gen > 7 ? DefaultFallback8 : DefaultFallback7;
-            if (lang == null)
-                return fallback;
-            return new SimpleTrainerInfo((GameVersion)fallback.Game) { Language = (int)lang };
+            return lang == null ? fallback : (ITrainerInfo)new SimpleTrainerInfo((GameVersion)fallback.Game) { Language = (int)lang };
         }
 
         public static ITrainerInfo DefaultFallback(GameVersion ver, LanguageID? lang = null)
@@ -101,9 +99,9 @@ namespace PKHeX.Core.AutoMod
                     : DefaultFallback(generation, lang);
             if (lang == null)
                 return fallback;
-            if (lang == (LanguageID)fallback.Language)
-                return fallback;
-            return special_version ? DefaultFallback(ver, lang) : DefaultFallback(generation, lang);
+            return lang == (LanguageID)fallback.Language
+                ? fallback
+                : special_version ? DefaultFallback(ver, lang) : DefaultFallback(generation, lang);
         }
 
         /// <summary>
@@ -122,9 +120,7 @@ namespace PKHeX.Core.AutoMod
         )
         {
             var byVer = Database.GetTrainer(version, lang);
-            if (byVer is not null)
-                return byVer;
-            return GetSavedTrainerData(gen, version, fallback, lang);
+            return byVer ?? GetSavedTrainerData(gen, version, fallback, lang);
         }
 
         /// <summary>
@@ -142,14 +138,14 @@ namespace PKHeX.Core.AutoMod
         {
             int origin = pk.Generation;
             int format = pk.Format;
-            if (format != origin)
-                return GetSavedTrainerData(
+            return format != origin
+                ? GetSavedTrainerData(
                     format,
                     (GameVersion)template_save.Game,
                     fallback: template_save,
                     lang: lang
-                );
-            return GetSavedTrainerData((GameVersion)pk.Version, origin, template_save, lang);
+                )
+                : GetSavedTrainerData((GameVersion)pk.Version, origin, template_save, lang);
         }
 
         /// <summary>

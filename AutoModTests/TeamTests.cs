@@ -236,9 +236,7 @@ namespace AutoModTests
     {
         public bool Equals(ShowdownSet? x, ShowdownSet? y)
         {
-            if (x == null || y == null)
-                return false;
-            return x.Text.Trim() == y.Text.Trim();
+            return x != null && y != null && x.Text.Trim() == y.Text.Trim();
         }
 
         public int GetHashCode(ShowdownSet obj) => obj.Text.GetHashCode();

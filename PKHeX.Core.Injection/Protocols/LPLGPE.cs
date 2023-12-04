@@ -3,14 +3,11 @@ using System.Collections.Generic;
 
 namespace PKHeX.Core.Injection
 {
-    public class LPLGPE : InjectionBase
+    public class LPLGPE(LiveHeXVersion lv, bool useCache) : InjectionBase(lv, useCache)
     {
-        private static readonly LiveHeXVersion[] SupportedVersions = { LiveHeXVersion.LGPE_v102 };
+        private static readonly LiveHeXVersion[] SupportedVersions = [LiveHeXVersion.LGPE_v102];
 
         public static LiveHeXVersion[] GetVersions() => SupportedVersions;
-
-        public LPLGPE(LiveHeXVersion lv, bool useCache)
-            : base(lv, useCache) { }
 
         public override byte[] ReadBox(PokeSysBotMini psb, int box, int len, List<byte[]> allpkm)
         {

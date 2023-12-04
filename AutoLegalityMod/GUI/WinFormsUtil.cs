@@ -51,13 +51,13 @@ namespace AutoModPlugins
                 + $"Current PKHeX version: {versions.CoreVersionCurrent}\n\n"
                 + "Click the \"Wiki\" button to learn how to fix this error.";
 
-            return new ALMError(msg, new[] { "Wiki", "Cancel" });
+            return new ALMError(msg, ["Wiki", "Cancel"]);
         }
 
         public static ALMError ALMErrorBasic(string msg, bool updateButton = false)
         {
             SystemSounds.Hand.Play();
-            return new ALMError(msg, new[] { updateButton ? "Update" : "Wiki", "Cancel" });
+            return new ALMError(msg, [updateButton ? "Update" : "Wiki", "Cancel"]);
         }
 
         /// <summary>

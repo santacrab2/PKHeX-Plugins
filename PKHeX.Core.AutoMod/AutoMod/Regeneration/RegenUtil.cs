@@ -78,10 +78,10 @@ namespace PKHeX.Core.AutoMod
             return CleanFilters(valid);
         }
 
-        private static IReadOnlyList<StringInstruction> CleanFilters(List<String> lines)
+        private static StringInstruction[] CleanFilters(List<String> lines)
         {
             if (lines.Count == 0)
-                return Array.Empty<StringInstruction>();
+                return [];
             var cleaned = lines.Select(z => z.TrimStart(EncounterFilterPrefix));
             var filters = StringInstruction.GetFilters(cleaned).ToArray();
             BatchEditing.ScreenStrings(filters);
@@ -130,9 +130,7 @@ namespace PKHeX.Core.AutoMod
         {
             var result = new List<string>();
             foreach (var s in set.Filters)
-                result.Add(
-                    $"{StringInstruction.Prefixes[(int)s.Comparer]}{s.PropertyName}={s.PropertyValue}"
-                );
+                result.Add($"{StringInstruction.Prefixes[(int)s.Comparer]}{s.PropertyName}={s.PropertyValue}");
             foreach (var s in set.Instructions)
                 result.Add($".{s.PropertyName}={s.PropertyValue}");
             return string.Join(Environment.NewLine, result);
@@ -145,9 +143,7 @@ namespace PKHeX.Core.AutoMod
         {
             var result = new List<string>();
             foreach (var s in filters)
-                result.Add(
-                    $"{prefix}{StringInstruction.Prefixes[(int)s.Comparer]}{s.PropertyName}={s.PropertyValue}"
-                );
+                result.Add($"{prefix}{StringInstruction.Prefixes[(int)s.Comparer]}{s.PropertyName}={s.PropertyValue}");
             return string.Join(Environment.NewLine, result);
         }
 
@@ -212,9 +208,7 @@ namespace PKHeX.Core.AutoMod
                         or LanguageID.ChineseT;
             if (full && GlyphLegality.ContainsHalfWidth(OT))
                 return GlyphLegality.StringConvert(OT, StringConversionType.FullWidth);
-            if (!full && GlyphLegality.ContainsFullWidth(OT))
-                return GlyphLegality.StringConvert(OT, StringConversionType.HalfWidth);
-            return OT;
+            return !full && GlyphLegality.ContainsFullWidth(OT) ? GlyphLegality.StringConvert(OT, StringConversionType.HalfWidth) : OT;
         }
 
         public static string MutateNickname(string nick, LanguageID? lang, GameVersion game)
@@ -242,19 +236,19 @@ namespace PKHeX.Core.AutoMod
         {
             var pi = GameData.GetPersonal(GetGameVersionFromGen(gen))[species];
             var abils_ct = pi.AbilityCount;
-            if (pi is not IPersonalAbility12 a)
-                return -1;
-            return ar switch
-            {
-                AbilityRequest.Any => -1,
-                AbilityRequest.First => a.Ability1,
-                AbilityRequest.Second => a.Ability2,
-                AbilityRequest.NotHidden => a.Ability1,
-                AbilityRequest.PossiblyHidden => a.Ability1,
-                AbilityRequest.Hidden
-                    => abils_ct > 2 && pi is IPersonalAbility12H h ? h.AbilityH : -1,
-                _ => throw new Exception($"Invalid AbilityRequest: {ar}"),
-            };
+            return pi is not IPersonalAbility12 a
+                ? -1
+                : ar switch
+                {
+                    AbilityRequest.Any => -1,
+                    AbilityRequest.First => a.Ability1,
+                    AbilityRequest.Second => a.Ability2,
+                    AbilityRequest.NotHidden => a.Ability1,
+                    AbilityRequest.PossiblyHidden => a.Ability1,
+                    AbilityRequest.Hidden
+                        => abils_ct > 2 && pi is IPersonalAbility12H h ? h.AbilityH : -1,
+                    _ => throw new Exception($"Invalid AbilityRequest: {ar}"),
+                };
         }
 
         public static GameVersion GetGameVersionFromGen(int gen) =>

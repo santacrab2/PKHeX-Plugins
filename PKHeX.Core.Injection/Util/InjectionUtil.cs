@@ -13,12 +13,12 @@ namespace PKHeX.Core.Injection
             bool heapRelative = true
         )
         {
-            if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(new[] { '-', '/', '*' }) != -1)
+            if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(['-', '/', '*']) != -1)
                 return INVALID_PTR;
             while (ptr.Contains("]]"))
                 ptr = ptr.Replace("]]", "]+0]");
             uint finadd = 0;
-            if (!ptr.EndsWith("]"))
+            if (!ptr.EndsWith(']'))
             {
                 finadd = Util.GetHexValue(ptr.Split('+').Last());
                 ptr = ptr[..ptr.LastIndexOf('+')];

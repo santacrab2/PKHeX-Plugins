@@ -14,7 +14,7 @@ namespace AutoModTests
         static LivingDexTests() => TestUtil.InitializePKHeXEnvironment();
 
         private static readonly GameVersion[] GetGameVersionsToTest =
-        {
+        [
             SL,
             BD,
             PLA,
@@ -29,7 +29,7 @@ namespace AutoModTests
             E,
             C,
             RD
-        };
+        ];
 
         private static GenerateResult SingleSaveTest(this GameVersion s, LivingDexConfig cfg)
         {
@@ -95,7 +95,7 @@ namespace AutoModTests
         // Ideally should use purely PKHeX's methods or known total counts so that we're not verifying against ourselves.
         private static int GetExpectedDexCount(this SaveFile sav, LivingDexConfig cfg)
         {
-            Dictionary<ushort, List<byte>> speciesDict = new();
+            Dictionary<ushort, List<byte>> speciesDict = [];
             var personal = sav.Personal;
             var species = Enumerable.Range(1, sav.MaxSpeciesID).Select(x => (ushort)x);
             foreach (ushort s in species)
@@ -103,11 +103,11 @@ namespace AutoModTests
                 if (!personal.IsSpeciesInGame(s))
                     continue;
 
-                List<byte> forms = new();
+                List<byte> forms = [];
                 var formCount = personal[s].FormCount;
                 var str = GameInfo.Strings;
                 if (formCount == 1 && cfg.IncludeForms) // Validate through form lists
-                    formCount = (byte) FormConverter.GetFormList(s, str.types, str.forms, GameInfo.GenderSymbolUnicode, sav.Context).Length;
+                    formCount = (byte)FormConverter.GetFormList(s, str.types, str.forms, GameInfo.GenderSymbolUnicode, sav.Context).Length;
                 for (byte f = 0; f < formCount; f++)
                 {
                     if (!personal.IsPresentInGame(s, f) || FormInfo.IsFusedForm(s, f, sav.Generation) || FormInfo.IsBattleOnlyForm(s, f, sav.Generation) || (FormInfo.IsTotemForm(s, f) && sav.Context is not EntityContext.Gen7) || FormInfo.IsLordForm(s, f, sav.Context))

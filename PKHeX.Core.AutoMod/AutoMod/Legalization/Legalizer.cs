@@ -34,9 +34,9 @@ namespace PKHeX.Core.AutoMod
         {
             var set = new RegenTemplate(pk, tr.Generation);
             var almres = tr.GetLegalFromTemplateTimeout(pk, set);
-            if (almres.Status == LegalizationResult.VersionMismatch)
-                throw new MissingMethodException("PKHeX and Plugins have a version mismatch");
-            return almres.Created;
+            return almres.Status == LegalizationResult.VersionMismatch
+                ? throw new MissingMethodException("PKHeX and Plugins have a version mismatch")
+                : almres.Created;
         }
 
         /// <summary>
@@ -63,8 +63,8 @@ namespace PKHeX.Core.AutoMod
             var emptySlots = overwrite
                 ? Enumerable.Range(start, sets.Count).Where(set => set < arr.Count).ToList()
                 : FindAllEmptySlots(arr, start);
-            invalidAPISets = new List<RegenTemplate>();
-            timedoutSets = new List<RegenTemplate>();
+            invalidAPISets = [];
+            timedoutSets = [];
 
             if (emptySlots.Count < sets.Count)
                 return AutoModErrorCode.NotEnoughSpace;
