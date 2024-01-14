@@ -130,7 +130,9 @@ namespace AutoModPlugins
         [Category(LivingDex)]
         [Description("Only generate Pokémon natively available in the game version pair.")]
         public bool NativeOnly { get; set; } = true;
-
+        [Category(LivingDex)]
+        [Description("Generate Transfer Living Dex destination game")]
+        public GameVersion TransferVersion { get; set; } = GameVersion.VL;
         // Miscellaneous
         [Category(Miscellaneous)]
         [Description("Base URL for Flagbrew's Global PKSM Sharing Service (GPSS) features.")]

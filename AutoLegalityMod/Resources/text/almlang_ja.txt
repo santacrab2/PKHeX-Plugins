@@ -45,6 +45,7 @@ Main.Menu_ExportPKSMBank=PKSM BankをPKMに分割する
 Main.Menu_LeaglizeBoxes=アクティブなポケモンを合法化する
 Main.Menu_LiveHeX=LiveHeXを開く
 Main.Menu_LivingDex=Living Dexを生成する
+Main.Menu_TransferDex=Transfer Dexを生成する
 Main.Menu_MGDBDownloader=MGDBをダウンロードする
 Main.Menu_SmogonGenner=Smogon セットを生成する
 Main.Menu_URLGenning=URLから生成する

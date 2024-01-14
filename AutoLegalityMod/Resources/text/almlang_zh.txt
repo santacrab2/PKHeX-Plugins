@@ -45,6 +45,7 @@ Main.Menu_ExportPKSMBank=将PKSM Bank拆分为PKM
 Main.Menu_LeaglizeBoxes=合法化当前宝可梦
 Main.Menu_LiveHeX=打开LiveHeX
 Main.Menu_LivingDex=生成Living Dex
+Main.Menu_TransferDex=生成Transfer Dex
 Main.Menu_MGDBDownloader=下载MGDB
 Main.Menu_SmogonGenner=生成Smogon Sets
 Main.Menu_URLGenning=从URL生成

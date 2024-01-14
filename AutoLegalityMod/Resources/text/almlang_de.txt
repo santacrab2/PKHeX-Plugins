@@ -45,6 +45,7 @@ Main.Menu_ExportPKSMBank=Exporiere PKSM Bank zu PKM
 Main.Menu_LeaglizeBoxes=Aktuelles Pokemon legalisieren
 Main.Menu_LiveHeX=Öffne LiveHeX
 Main.Menu_LivingDex=Generiere Living Dex
+Main.Menu_TransferDex=Generiere Transfer Dex
 Main.Menu_MGDBDownloader=Lade MGDB
 Main.Menu_SmogonGenner=Generiere Smogon Sets
 Main.Menu_URLGenning=Generiere von URL

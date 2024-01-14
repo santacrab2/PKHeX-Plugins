@@ -265,6 +265,7 @@ namespace AutoModPlugins
                 SetShiny = settings.SetShiny,
                 SetAlpha = settings.SetAlpha,
                 NativeOnly = settings.NativeOnly,
+                TransferVersion = settings.TransferVersion,
             };
 
             if (APILegality.UseCompetitiveMarkings)
