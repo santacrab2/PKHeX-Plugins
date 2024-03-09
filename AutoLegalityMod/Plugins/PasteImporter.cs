@@ -7,6 +7,8 @@ using PKHeX.Core;
 using PKHeX.Core.AutoMod;
 using PKHeX.Core.Enhancements;
 using PKHeX.Core.Injection;
+using Microsoft.VisualBasic.Devices;
+using System.Windows.Input;
 
 namespace AutoModPlugins
 {
@@ -35,9 +37,16 @@ namespace AutoModPlugins
             {
                 form.Icon = Resources.icon;
             }
-
+            form.KeyDown += downkey;
             ShowdownSetLoader.PKMEditor = PKMEditor;
             ShowdownSetLoader.SaveFileEditor = SaveFileEditor;
+            
+        }
+
+        private void downkey(object? sender, KeyEventArgs e)
+        {
+            if ((e.KeyCode == Keys.NumPad6 || e.KeyCode == Keys.D6) && e.Control)
+                ShowdownSetLoader.Import(GetSixRandomMons());
         }
 
         private void ImportPaste(object? sender, EventArgs e)
@@ -65,13 +74,10 @@ namespace AutoModPlugins
                 if (ShowdownUtil.IsTextShowdownData(txt))
                     return txt;
             }
-
+            
             if (!WinFormsUtil.OpenSAVPKMDialog(new[] { "txt" }, out var path))
             {
                 WinFormsUtil.Alert("No data provided.");
-                var sixrando=WinFormsUtil.Prompt(MessageBoxButtons.OKCancel, "Generate 6 Random Pokemon?");
-                if (sixrando == DialogResult.OK)
-                    return GetSixRandomMons();
                 return null;
             }
 
@@ -92,6 +98,8 @@ namespace AutoModPlugins
         }
         public string? GetSixRandomMons()
         {
+            if(WinFormsUtil.Prompt(MessageBoxButtons.OKCancel,"Generate 6 Random Pokemon?") != DialogResult.OK) 
+                return null;
             string showdowntext = string.Empty;
             int i = 0;
             do
@@ -133,7 +141,7 @@ namespace AutoModPlugins
                     var goodset = new SmogonSetList(rough);
                     if (goodset.Valid && goodset.Sets.Count != 0)
                     {
-                        showdowntext += goodset.Sets[0].Text;
+                        showdowntext += goodset.Sets[rng.Next(goodset.Sets.Count)].Text;
                         showdowntext += "\n\n";
                         i++;
                         continue;
