@@ -103,6 +103,8 @@ namespace AutoModPlugins
                 rough.Gender = rough.GetSaneGender();
                 if (!SaveFileEditor.SAV.Personal.IsSpeciesInGame(rough.Species))
                     continue;
+                if (_settings.RandomTypes.Length > 0 && (!_settings.RandomTypes.Contains((MoveType)rough.PersonalInfo.Type1) || !_settings.RandomTypes.Contains((MoveType)rough.PersonalInfo.Type2)))
+                    continue;
                 var formnumb = SaveFileEditor.SAV.Personal[rough.Species].FormCount;
                 if(formnumb == 1)
                     formnumb = (byte)FormConverter.GetFormList(rough.Species, GameInfo.Strings.types, GameInfo.Strings.forms, GameInfo.GenderSymbolUnicode, SaveFileEditor.SAV.Context).Length;
