@@ -46,7 +46,7 @@ namespace AutoModPlugins
         private void downkey(object? sender, KeyEventArgs e)
         {
             if ((e.KeyCode == Keys.NumPad6 || e.KeyCode == Keys.D6) && e.Control)
-                ShowdownSetLoader.Import(GetSixRandomMons());
+                GetSixRandomMons();
         }
 
         private void ImportPaste(object? sender, EventArgs e)
@@ -96,12 +96,13 @@ namespace AutoModPlugins
             WinFormsUtil.Alert("Text file with invalid data provided. Please provide a text file with proper Showdown data");
             return null;
         }
-        public string? GetSixRandomMons()
+        public void GetSixRandomMons()
         {
             if(WinFormsUtil.Prompt(MessageBoxButtons.OKCancel,"Generate 6 Random Pokemon?") != DialogResult.OK) 
-                return null;
-            string showdowntext = string.Empty;
+                return;
+            Span<PKM> RandomTeam = [];
             int i = 0;
+            Span<int> ivs = stackalloc int[6];
             do
             {
                 var rng = new Random();
@@ -141,27 +142,38 @@ namespace AutoModPlugins
                     var goodset = new SmogonSetList(rough);
                     if (goodset.Valid && goodset.Sets.Count != 0)
                     {
-                        showdowntext += goodset.Sets[rng.Next(goodset.Sets.Count)].Text;
-                        showdowntext += "\n\n";
+                        var checknull = SaveFileEditor.SAV.GetLegalFromSet(goodset.Sets[0]);
+                        if(checknull.Status != LegalizationResult.Regenerated)
+                            continue;
+                        RandomTeam = RandomTeam.ToArray().Append(checknull.Created).ToArray();
                         i++;
                         continue;
                     }
                 }
-                catch (Exception ex) { }
+                catch (Exception) { }
 
-                showdowntext += new ShowdownSet(rough).Text.Split('\r')[0];
-                showdowntext += "\nLevel: 100\n";
-                Span<int> ivs = stackalloc int[6];
+                var showstring = new ShowdownSet(rough).Text.Split('\r')[0];
+                showstring += "\nLevel: 100\n";
+                ivs.Clear();
                 EffortValues.SetMax(ivs, rough);
-                showdowntext += $"EVs: {ivs[0]} HP / {ivs[1]} Atk / {ivs[2]} Def / {ivs[3]} SpA / {ivs[4]} SpD / {ivs[5]} Spe\n";
+                showstring += $"EVs: {ivs[0]} HP / {ivs[1]} Atk / {ivs[2]} Def / {ivs[3]} SpA / {ivs[4]} SpD / {ivs[5]} Spe\n";
                 var m = new ushort[4];
                 rough.GetMoveSet(m, true);
-                showdowntext += $"- {GameInfo.MoveDataSource.First(z => z.Value == m[0]).Text}\n- {GameInfo.MoveDataSource.First(z => z.Value == m[1]).Text}\n- {GameInfo.MoveDataSource.First(z => z.Value == m[2]).Text}\n- {GameInfo.MoveDataSource.First(z => z.Value == m[3]).Text}";
-                showdowntext += "\n\n";
+                showstring += $"- {GameInfo.MoveDataSource.First(z => z.Value == m[0]).Text}\n- {GameInfo.MoveDataSource.First(z => z.Value == m[1]).Text}\n- {GameInfo.MoveDataSource.First(z => z.Value == m[2]).Text}\n- {GameInfo.MoveDataSource.First(z => z.Value == m[3]).Text}";
+                showstring += "\n\n";
+                var nullcheck = SaveFileEditor.SAV.GetLegalFromSet(new ShowdownSet(showstring));
+                if (nullcheck.Status != LegalizationResult.Regenerated)
+                    continue;
+                RandomTeam = RandomTeam.ToArray().Append(nullcheck.Created).ToArray();
                 i++;
 
             } while (i < 6);
-            return showdowntext;
+            var empties = Legalizer.FindAllEmptySlots(SaveFileEditor.SAV.BoxData, 0);
+            for(int k =0; k<6; k++)
+            {
+                SaveFileEditor.SAV.SetBoxSlotAtIndex(RandomTeam[k], empties[k]);
+            }
+            SaveFileEditor.ReloadSlots();
         }
         public static int? GetFormSpecificItem(int game, int species, int form)
         {

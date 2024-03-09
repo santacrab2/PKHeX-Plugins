@@ -88,7 +88,6 @@ namespace AutoModPlugins
         {
             // Check and set trainerdata based on ISaveBlock interfaces
             Span<byte> dest;
-            int startofs = 0;
 
             Func<PokeSysBotMini, byte[]?> tdata;
             switch (sav)

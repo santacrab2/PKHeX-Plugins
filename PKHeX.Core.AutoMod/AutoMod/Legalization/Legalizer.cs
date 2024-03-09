@@ -218,7 +218,7 @@ namespace PKHeX.Core.AutoMod
         /// <param name="data">Box Data of the save file</param>
         /// <param name="start">Starting position for finding an empty slot</param>
         /// <returns>A list of all indices in the current box that are empty</returns>
-        private static List<int> FindAllEmptySlots(IList<PKM> data, int start)
+        public static List<int> FindAllEmptySlots(IList<PKM> data, int start)
         {
             var emptySlots = new List<int>();
             for (int i = start; i < data.Count; i++)
