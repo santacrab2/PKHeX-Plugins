@@ -396,6 +396,7 @@ namespace PKHeX.Core.AutoMod
         public static PKM[] GetSixRandomMons(this SaveFile sav)
         {
             var RandomTeam = new List<PKM>();
+            Span<int> ivs = stackalloc int[6];
             var selectedSpecies = new HashSet<ushort>();
             var rng = new Random();
 
@@ -460,7 +461,6 @@ namespace PKHeX.Core.AutoMod
 
                 var showstring = new ShowdownSet(rough).Text.Split('\r')[0];
                 showstring += "\nLevel: 100\n";
-                Span<int> ivs = stackalloc int[6];
                 ivs.Clear();
                 EffortValues.SetMax(ivs, rough);
                 showstring += $"EVs: {ivs[0]} HP / {ivs[1]} Atk / {ivs[2]} Def / {ivs[3]} SpA / {ivs[4]} SpD / {ivs[5]} Spe\n";
