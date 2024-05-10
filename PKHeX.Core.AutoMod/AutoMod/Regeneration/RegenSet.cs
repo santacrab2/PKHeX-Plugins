@@ -39,6 +39,7 @@ namespace PKHeX.Core.AutoMod
             modified.Add($".MetDay={pk.MetDay}");
             modified.Add($".MetMonth={pk.MetMonth}");
             modified.Add($".MetYear={pk.MetYear}");
+            modified.Add($".MetLevel={pk.MetLevel}");
             if(modified.Count > 0)
                 Batch = new StringInstructionSet(modified.ToArray().AsSpan());
         }
