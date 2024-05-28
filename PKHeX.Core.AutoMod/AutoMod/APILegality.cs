@@ -115,7 +115,7 @@ namespace PKHeX.Core.AutoMod
                 raw = raw.SanityCheckLocation(enc);
                 if (raw.IsEgg) // PGF events are sometimes eggs. Force hatch them before proceeding
                     raw.HandleEggEncounters(enc, tr);
-
+                
                 raw.PreSetPIDIV(enc, set, criteria);
 
                 // Transfer any VC1 via VC2, as there may be GSC exclusive moves requested.
@@ -127,7 +127,7 @@ namespace PKHeX.Core.AutoMod
                 if (pk == null)
                     continue;
 
-                if (EntityConverter.IsIncompatibleGB(pk, template.Japanese, pk.Japanese))
+                if (!EntityConverter.IsCompatibleGB(pk, template.Japanese, pk.Japanese))
                     continue;
 
                 pk = pk.Clone(); // Handle Nickname-Trash issues (weedle word filter)
