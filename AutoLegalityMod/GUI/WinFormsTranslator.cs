@@ -93,7 +93,7 @@ namespace AutoModPlugins
             }
 
             var txt = Resources.ResourceManager.GetObject(file);
-            return txt is not string s ? [] : Util.LoadStringList(file, s);
+            return txt is not string s ? [] : Util.GetStringList(file, s);
         }
 
         private static IEnumerable<object> GetTranslatableControls(Control f)
