@@ -87,7 +87,7 @@ namespace AutoModPlugins
                 }
             }
 
-            if (Util.IsStringListCached(file, out var result))
+            if (Util.CachedStrings.TryGetValue(file, out var result))
             {
                 return result;
             }
