@@ -296,7 +296,8 @@ namespace PKHeX.Core.AutoMod
             }
 
             pk.SetShinySID(); // no mg = no lock
-
+            if (isShiny && (pk.Generation == 1 || pk.Generation == 2))
+                pk.SetShiny();
             if (pk.Generation != 5)
                 return;
 
