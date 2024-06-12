@@ -236,7 +236,7 @@ namespace PKHeX.Core.AutoMod
                 return null;
 
             var setText = new ShowdownSet(blank).Text.Split('\r')[0];
-            if (shiny && !SimpleEdits.IsShinyLockedSpeciesForm(blank.Species, blank.Form)||(tr.Generation!=6 && blank.Species != (ushort)Species.Vivillon && blank.Form !=18))
+            if (shiny && !SimpleEdits.IsShinyLockedSpeciesForm(blank.Species, blank.Form)||(shiny && tr.Generation!=6 && blank.Species != (ushort)Species.Vivillon && blank.Form !=18))
                 setText += Environment.NewLine + "Shiny: Yes";
 
             if (template is IAlphaReadOnly && alpha && tr.Version == GameVersion.PLA)
