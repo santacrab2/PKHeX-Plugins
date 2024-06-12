@@ -277,7 +277,18 @@ namespace PKHeX.Core.AutoMod
 
             if (template.AbilityNumber == 4 && destVer.GetGeneration() < 8)
                 gamelist = gamelist.Where(z => z.GetGeneration() is not 3 and not 4).ToArray();
-
+            if (gamelist.Contains(GameVersion.HGSS))
+            {
+                gamelist = gamelist.Where(z => z != GameVersion.HGSS).ToArray();
+                gamelist = gamelist.Append(GameVersion.HG).ToArray();
+                gamelist = gamelist.Append(GameVersion.SS).ToArray();
+            }
+            if (gamelist.Contains(GameVersion.FRLG))
+            {
+                gamelist = gamelist.Where(z => z != GameVersion.FRLG).ToArray();
+                gamelist = gamelist.Append(GameVersion.FR).ToArray();
+                gamelist = gamelist.Append(GameVersion.LG).ToArray();
+            }
             return gamelist;
         }
 
