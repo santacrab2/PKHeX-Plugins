@@ -134,7 +134,7 @@ namespace PKHeX.Core.AutoMod
         {
             int origin = pk.Generation;
             byte format = pk.Format;
-            return format != origin ? GetSavedTrainerData(format, template_save.Version, fallback: template_save, lang: lang) : GetSavedTrainerData((byte)pk.Version, (GameVersion)origin, template_save, lang);
+            return format != origin ? GetSavedTrainerData(format, template_save.Version, fallback: template_save, lang: lang) : GetSavedTrainerData((byte)origin, pk.Version, template_save, lang);
         }
 
         /// <summary>
