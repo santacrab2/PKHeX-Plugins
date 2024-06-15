@@ -11,8 +11,8 @@ namespace PKHeX.Core.AutoMod
     {
         private static readonly TrainerDatabase Database = new();
         public static readonly string TrainerPath = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath)!, "trainers");
-        private static readonly SimpleTrainerInfo DefaultFallback8 = new(GameVersion.SW);
-        private static readonly SimpleTrainerInfo DefaultFallback7 = new(GameVersion.UM);
+        private static readonly SimpleTrainerInfo DefaultFallback8 = new(GameVersion.SW) { Generation = 8 };
+        private static readonly SimpleTrainerInfo DefaultFallback7 = new(GameVersion.UM) { Generation = 7 };
         private static readonly GameVersion[] FringeVersions =
         [
             GameVersion.GG,

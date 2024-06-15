@@ -64,8 +64,6 @@ namespace PKHeX.Core.AutoMod
         {
             var pklist = new ConcurrentBag<PKM>();
             var tr = APILegality.UseTrainerData ? TrainerSettings.GetSavedTrainerData(sav.Generation) : sav;
-            if (tr.Context != sav.Context)
-                tr = sav;
             var pt = sav.Personal;
             var species = Enumerable.Range(1, sav.MaxSpeciesID).Select(x => (ushort)x);
             Parallel.ForEach(species, s =>
