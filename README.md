@@ -37,7 +37,7 @@ To use the plugins:
 ## Support Server
 Please refer to the [Wiki](https://github.com/architdate/PKHeX-Plugins/wiki) first for usage information and help first, as most queries are answered there. If you have looked and need additional help, you can join the dedicated Discord server for this mod!
 
-[<img src="https://canary.discordapp.com/api/guilds/401014193211441153/widget.png?style=banner2">](https://www.piplup.net)
+[<img src="https://discord.com/api/guilds/872587205787394119/widget.png?style=banner2">](https://www.piplup.net)
 
 ## Contributing
 To contribute to the repository, you can submit a pull request to the repository. Try to follow a format similar to the current codebase. All contributions are greatly appreciated! If you would like to discuss possible contributions without using GitHub, please contact us on the support server above. 

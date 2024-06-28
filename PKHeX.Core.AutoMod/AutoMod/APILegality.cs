@@ -56,7 +56,7 @@ namespace PKHeX.Core.AutoMod
                 regen = RegenSet.Default;
             }
 
-            if (template.Version == 0)
+            if (template.Version == GameVersion.Any)
                 template.Version = dest.Version;
 
             template.ApplySetDetails(set);
@@ -84,7 +84,7 @@ namespace PKHeX.Core.AutoMod
             criteria.ForceMinLevelRange = true;
             if (regen.EncounterFilters.Any())
                 encounters = encounters.Where(enc => BatchEditing.IsFilterMatch(regen.EncounterFilters, enc));
-
+            encounters = encounters.OrderByDescending(z => z.Version == destVer);
             PKM? last = null;
             foreach (var enc in encounters)
             {
@@ -141,7 +141,7 @@ namespace PKHeX.Core.AutoMod
                 raw = raw.SanityCheckLocation(enc);
                 if (raw.IsEgg) // PGF events are sometimes eggs. Force hatch them before proceeding
                     raw.HandleEggEncounters(enc, tr);
-
+                
                 raw.PreSetPIDIV(enc, set, criteria);
 
                 // Transfer any VC1 via VC2, as there may be GSC exclusive moves requested.
@@ -166,7 +166,7 @@ namespace PKHeX.Core.AutoMod
                 if (pk == null)
                     continue;
 
-                if (EntityConverter.IsIncompatibleGB(pk, template.Japanese, pk.Japanese))
+                if (!EntityConverter.IsCompatibleGB(pk, template.Japanese, pk.Japanese))
                     continue;
 
                 pk = pk.Clone(); // Handle Nickname-Trash issues (weedle word filter)
@@ -315,7 +315,18 @@ namespace PKHeX.Core.AutoMod
 
             if (template.AbilityNumber == 4 && destVer.GetGeneration() < 8)
                 gamelist = gamelist.Where(z => z.GetGeneration() is not 3 and not 4).ToArray();
-
+            if (gamelist.Contains(GameVersion.HGSS))
+            {
+                gamelist = gamelist.Where(z => z != GameVersion.HGSS).ToArray();
+                gamelist = gamelist.Append(GameVersion.HG).ToArray();
+                gamelist = gamelist.Append(GameVersion.SS).ToArray();
+            }
+            if (gamelist.Contains(GameVersion.FRLG))
+            {
+                gamelist = gamelist.Where(z => z != GameVersion.FRLG).ToArray();
+                gamelist = gamelist.Append(GameVersion.FR).ToArray();
+                gamelist = gamelist.Append(GameVersion.LG).ToArray();
+            }
             return gamelist;
         }
 

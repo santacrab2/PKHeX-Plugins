@@ -2,9 +2,12 @@
 using PKHeX.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace AutoModPlugins
@@ -17,9 +20,9 @@ namespace AutoModPlugins
         internal static void TranslateInterface(this Control form, string lang) =>
             TranslateForm(form, GetContext(lang));
 
-        private static string GetTranslationFileNameInternal(string lang) => $"almlang_{lang}";
+        private static string GetTranslationFileNameInternal(ReadOnlySpan<char> lang) => $"almlang_{lang}";
 
-        private static string GetTranslationFileNameExternal(string lang) => $"almlang_{lang}.txt";
+        private static string GetTranslationFileNameExternal(ReadOnlySpan<char> lang) => $"almlang_{lang}.txt";
 
         public static string CurrentLanguage
         {
@@ -27,7 +30,7 @@ namespace AutoModPlugins
             private set => GameInfo.CurrentLanguage = value;
         }
 
-        internal static TranslationContext GetContext(string lang)
+        public static TranslationContext GetContext(string lang)
         {
             if (Context.TryGetValue(lang, out var context))
                 return context;
@@ -70,30 +73,19 @@ namespace AutoModPlugins
             form.ResumeLayout();
         }
 
-        private static string[] GetTranslationFile(string lang)
+        private static ReadOnlySpan<char> GetTranslationFile(ReadOnlySpan<char> lang)
         {
             var file = GetTranslationFileNameInternal(lang);
-
-            // Check to see if a the translation file exists in the same folder as the executable
+            // Check to see if the desired translation file exists in the same folder as the executable
             string externalLangPath = GetTranslationFileNameExternal(file);
             if (File.Exists(externalLangPath))
             {
-                try
-                {
-                    return File.ReadAllLines(externalLangPath);
-                }
-                catch
-                { /* In use? Just return the internal resource. */
-                }
+                try { return File.ReadAllText(externalLangPath); }
+                catch { /* In use? Just return the internal resource. */ }
             }
 
-            if (Util.IsStringListCached(file, out var result))
-            {
-                return result;
-            }
-
-            var txt = Resources.ResourceManager.GetObject(file);
-            return txt is not string s ? [] : Util.LoadStringList(file, s);
+            var txt = (string?)Properties.Resources.ResourceManager.GetObject(file);
+            return txt ?? "";
         }
 
         private static IEnumerable<object> GetTranslatableControls(Control f)
@@ -123,7 +115,7 @@ namespace AutoModPlugins
                             }
                         }
 
-                        if (z is ListControl or TextBoxBase or LinkLabel  or NumericUpDown or ContainerControl)
+                        if (z is ListControl or TextBoxBase or LinkLabel or NumericUpDown or ContainerControl)
                         {
                             break; // undesirable to modify, ignore
                         }
@@ -195,15 +187,6 @@ namespace AutoModPlugins
             }
         }
 
-        public static void UpdateAll(string baseLanguage, IEnumerable<string> others)
-        {
-            var basecontext = GetContext(baseLanguage);
-            foreach (var lang in others)
-            {
-                var c = GetContext(lang);
-                c.UpdateFrom(basecontext);
-            }
-        }
 
         public static void DumpAll(params string[] banlist)
         {
@@ -248,15 +231,6 @@ namespace AutoModPlugins
             }
         }
 
-        public static void SetRemovalMode(bool status = true)
-        {
-            foreach (TranslationContext c in Context.Values)
-            {
-                c.RemoveUsedKeys = status;
-                c.AddNew = !status;
-            }
-        }
-
         public static void RemoveAll(string defaultLanguage, params string[] banlist)
         {
             var badKeys = Context[defaultLanguage];
@@ -276,63 +250,97 @@ namespace AutoModPlugins
 
     public sealed class TranslationContext
     {
-        public bool AddNew { private get; set; }
-        public bool RemoveUsedKeys { private get; set; }
         public const char Separator = '=';
-        private readonly Dictionary<string, string> translation = [];
+        private readonly Dictionary<string, string> Translation = [];
+        public IReadOnlyDictionary<string, string> Lookup => Translation;
+        public bool AddNew { get; set; }
 
-        public TranslationContext(IEnumerable<string> content, char separator = Separator)
+        public void Clear() => Translation.Clear();
+
+        public TranslationContext(ReadOnlySpan<char> content, char separator = Separator)
         {
-            var entries = content.Select(z => z.Split(separator)).Where(z => z.Length == 2);
-            foreach (var kvp in entries.Where(z => !translation.ContainsKey(z[0])))
-            {
-                translation.Add(kvp[0], kvp[1]);
-            }
+            var iterator = content.EnumerateLines();
+            foreach (var line in iterator)
+                LoadLine(line, separator);
         }
 
+        private void LoadLine(ReadOnlySpan<char> line, char separator = Separator)
+        {
+            var split = line.IndexOf(separator);
+            if (split < 0)
+                return; // ignore
+            var key = line[..split].ToString();
+            var value = line[(split + 1)..].ToString();
+            Translation.TryAdd(key, value);
+        }
+
+        [return: NotNullIfNotNull(nameof(fallback))]
         public string? GetTranslatedText(string val, string? fallback)
         {
-            if (RemoveUsedKeys)
-            {
-                translation.Remove(val);
-            }
-
-            if (translation.TryGetValue(val, out var translated))
-            {
+            if (Translation.TryGetValue(val, out var translated))
                 return translated;
-            }
 
             if (fallback != null && AddNew)
-            {
-                translation.Add(val, fallback);
-            }
-
+                Translation.Add(val, fallback);
             return fallback;
         }
 
         public IEnumerable<string> Write(char separator = Separator)
         {
-            return translation.Select(z => $"{z.Key}{separator}{z.Value}").OrderBy(z => z.Contains('.')).ThenBy(z => z);
+            return Translation.Select(z => $"{z.Key}{separator}{z.Value}").OrderBy(z => z.Contains('.')).ThenBy(z => z);
         }
 
-        public void UpdateFrom(TranslationContext other)
+        public void UpdateFrom(ReadOnlySpan<char> text)
         {
-            bool oldAdd = AddNew;
-            AddNew = true;
-            foreach (var kvp in other.translation)
+            var lines = text.EnumerateLines();
+            foreach (var line in lines)
             {
-                GetTranslatedText(kvp.Key, kvp.Value);
-            }
+                var split = line.IndexOf(Separator);
+                if (split < 0)
+                    continue;
+                var key = line[..split].ToString();
 
-            AddNew = oldAdd;
+                ref var exist = ref CollectionsMarshal.GetValueRefOrNullRef(Translation, key);
+                if (!Unsafe.IsNullRef(ref exist))
+                    exist = line[(split + 1)..].ToString();
+            }
         }
 
-        public void RemoveKeys(TranslationContext other)
+        public void RemoveBannedEntries(ReadOnlySpan<string> banlist)
         {
-            foreach (var kvp in other.translation)
+            var badKeys = new List<string>();
+            foreach (var (key, _) in Translation)
             {
-                translation.Remove(kvp.Key);
+                if (IsBannedContains(key, banlist))
+                    badKeys.Add(key);
+
+                static bool IsBannedContains(ReadOnlySpan<char> key, ReadOnlySpan<string> banlist)
+                {
+                    foreach (var line in banlist)
+                    {
+                        if (line.EndsWith(Separator))
+                        {
+                            if (key.EndsWith(line.AsSpan()[..^1], StringComparison.Ordinal))
+                                return true;
+                        }
+                        else
+                        {
+                            if (key.Contains(line, StringComparison.Ordinal))
+                                return true;
+                        }
+                    }
+                    return false;
+                }
             }
+
+            foreach (var key in badKeys)
+                Translation.Remove(key);
+        }
+
+        public void CopyFrom(TranslationContext other)
+        {
+            foreach (var (key, value) in other.Translation)
+                Translation.Add(key, value);
         }
     }
 }

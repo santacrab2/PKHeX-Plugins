@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace AutoModPlugins
 {
@@ -169,6 +170,14 @@ namespace AutoModPlugins
         {
             Console.WriteLine($"{Name} was provided with the file path, but chose to do nothing with it.");
             return false; // no action taken
+        }
+        public virtual void NotifyDisplayLanguageChanged(string language)
+        {
+            var form = ((ContainerControl)SaveFileEditor).ParentForm;
+            if (form is null)
+                return;
+            WinFormsTranslator.TranslateInterface(form, language);
+         
         }
     }
 }
