@@ -182,6 +182,11 @@ namespace PKHeX.Core.AutoMod
 
         private static PKM GetPokemonFromEncounter(this IEncounterable enc, ITrainerInfo tr, EncounterCriteria criteria, IBattleTemplate set)
         {
+            if(enc is WC3 wc)
+            {
+                if (wc.Species == (ushort)Species.Jirachi && tr.Language == (byte)LanguageID.Japanese)
+                    tr = tr.MutateLanguage(LanguageID.English,tr.Version);
+            }
             var basepkm = enc.ConvertToPKM(tr, criteria);
 
             // If the encounter is a Wurmple, we need to make sure the evolution is correct.
