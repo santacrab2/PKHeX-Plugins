@@ -182,7 +182,7 @@ namespace PKHeX.Core.AutoMod
 
         private static PKM GetPokemonFromEncounter(this IEncounterable enc, ITrainerInfo tr, EncounterCriteria criteria, IBattleTemplate set)
         {
-            if(enc is WC3 wc)
+            if(enc is EncounterGift3 wc)
             {
                 if (wc.Species == (ushort)Species.Jirachi && tr.Language == (byte)LanguageID.Japanese)
                     tr = tr.MutateLanguage(LanguageID.English,tr.Version);
@@ -802,7 +802,7 @@ namespace PKHeX.Core.AutoMod
             pk.ForceHatchPKM();
             if (enc is MysteryGift { IsEgg: true })
             {
-                if (enc is WC3)
+                if (enc is EncounterGift3)
                     pk.MetLevel = 0; // hatched
 
                 pk.Language = tr.Language;
@@ -1398,7 +1398,7 @@ namespace PKHeX.Core.AutoMod
         {
             if (Method == PIDType.None)
             {
-                if (enc is WC3 wc3)
+                if (enc is EncounterGift3 wc3)
                 {
                     Method = wc3.Method;
                 }
@@ -1427,7 +1427,7 @@ namespace PKHeX.Core.AutoMod
                 iterPKM.SetAbilityIndex(ability_idx);
 
             var count = 0;
-            var isWishmaker = Method == PIDType.BACD_R && shiny && enc is WC3 { OriginalTrainerName: "WISHMKR" };
+            var isWishmaker = Method == PIDType.BACD_R && shiny && enc is EncounterGift3 { OriginalTrainerName: "WISHMKR" };
             var compromise = false;
             var gr = pk.PersonalInfo.Gender;
             do
@@ -1615,7 +1615,7 @@ namespace PKHeX.Core.AutoMod
             {
                 3 => info.EncounterMatch switch
                 {
-                    WC3 g => g.Method,
+                    EncounterGift3 g => g.Method,
                     EncounterStatic3 when pk.Version == GameVersion.CXD => PIDType.CXD,
                     EncounterStatic3Colo when pk.Version == GameVersion.CXD => PIDType.CXD,
                     EncounterStatic3XD when pk.Version == GameVersion.CXD => PIDType.CXD,
