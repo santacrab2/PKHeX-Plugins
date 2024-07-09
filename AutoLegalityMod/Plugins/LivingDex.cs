@@ -40,19 +40,20 @@ namespace AutoModPlugins
             pkms.CopyTo(bd);
             sav.BoxData = bd.ToArray();
             SaveFileEditor.ReloadSlots();
-            if(ExtraPkms.Length > 0) 
+            if (ExtraPkms.Length > 0)
             {
                 prompt = WinFormsUtil.Prompt(MessageBoxButtons.YesNo, "This Living Dex does not fit in all boxes. Save the extra pkms to a folder?");
-            }
-            if (prompt == DialogResult.Yes)
-            {
-                using var ofd = new FolderBrowserDialog();
-                if (ofd.ShowDialog() == DialogResult.OK)
+
+                if (prompt == DialogResult.Yes)
                 {
-                    if (ofd.SelectedPath != null)
+                    using var ofd = new FolderBrowserDialog();
+                    if (ofd.ShowDialog() == DialogResult.OK)
                     {
-                        foreach (var f in ExtraPkms)
-                            File.WriteAllBytes($"{ofd.SelectedPath}/{f.FileName}", f.EncryptedPartyData);
+                        if (ofd.SelectedPath != null)
+                        {
+                            foreach (var f in ExtraPkms)
+                                File.WriteAllBytes($"{ofd.SelectedPath}/{f.FileName}", f.EncryptedPartyData);
+                        }
                     }
                 }
             }
