@@ -115,7 +115,6 @@ namespace PKHeX.Core.AutoMod
                 raw = raw.SanityCheckLocation(enc);
                 if (raw.IsEgg) // PGF events are sometimes eggs. Force hatch them before proceeding
                     raw.HandleEggEncounters(enc, tr);
-                
                 raw.PreSetPIDIV(enc, set, criteria);
 
                 // Transfer any VC1 via VC2, as there may be GSC exclusive moves requested.
@@ -285,14 +284,14 @@ namespace PKHeX.Core.AutoMod
             if (gamelist.Contains(GameVersion.HGSS))
             {
                 gamelist = gamelist.Where(z => z != GameVersion.HGSS).ToArray();
-                gamelist = gamelist.Append(GameVersion.HG).ToArray();
-                gamelist = gamelist.Append(GameVersion.SS).ToArray();
+                gamelist = [.. gamelist, GameVersion.HG];
+                gamelist = [.. gamelist, GameVersion.SS];
             }
             if (gamelist.Contains(GameVersion.FRLG))
             {
                 gamelist = gamelist.Where(z => z != GameVersion.FRLG).ToArray();
-                gamelist = gamelist.Append(GameVersion.FR).ToArray();
-                gamelist = gamelist.Append(GameVersion.LG).ToArray();
+                gamelist = [.. gamelist, GameVersion.FR];
+                gamelist = [.. gamelist, GameVersion.LG];
             }
             return gamelist;
         }
@@ -1443,9 +1442,8 @@ namespace PKHeX.Core.AutoMod
                 }
                 if (PokeWalkerSeedFail(seed, Method, pk, iterPKM))
                     continue;
-                if (IsMatchFromPKHeX(pk, iterPKM, HPType, shiny, gr, set, enc, seed, Method))
+                if (IsMatchFromPKHeX(pk, iterPKM, HPType, shiny, gr, enc, seed, Method))
                     return;
-               
                 PIDGenerator.SetValuesFromSeed(pk, Method, seed);
                 if (pk.AbilityNumber != iterPKM.AbilityNumber )
                     continue;
@@ -1499,9 +1497,8 @@ namespace PKHeX.Core.AutoMod
                     break;
             } while (++count < 5_000_000);
         }
-        private static bool IsMatchFromPKHeX(PKM pk, PKM iterPKM, int HPType, bool shiny, byte gr, IBattleTemplate set, IEncounterable enc, uint seed, PIDType Method)
+        private static bool IsMatchFromPKHeX(PKM pk, PKM iterPKM, int HPType, bool shiny, byte gr, IEncounterable enc, uint seed, PIDType Method)
         {
-            
             if (pk.AbilityNumber != iterPKM.AbilityNumber && pk.Nature != iterPKM.Nature)
                 return false;
 
@@ -1552,15 +1549,6 @@ namespace PKHeX.Core.AutoMod
             if (!new LegalityAnalysis(pk).Valid)
                 return false;
             return true;
-        }
-        private static byte GetUnownForm(uint seed, bool hgss)
-        {
-            // ABCD|E(Item)|F(Form) determination
-            if (!hgss)
-                return 8; // Always 100% form as 'I' in one of the rooms. Don't need to check rand(1) choice.
-
-            var formSeed = LCRNG.Next6(seed);
-            return RuinsOfAlph4.GetEntranceForm(formSeed); // !?
         }
         private static int GetRequiredAbilityIdx(PKM pkm, IBattleTemplate set)
         {
@@ -1838,11 +1826,7 @@ namespace PKHeX.Core.AutoMod
         /// Wrapper function for GetLegalFromTemplate but with a Timeout
         /// </summary>
         public static AsyncLegalizationResult GetLegalFromTemplateTimeout(this ITrainerInfo dest, PKM template, IBattleTemplate set, bool nativeOnly = false) =>
-            GetLegalFromTemplateTimeoutAsync(dest, template, set, nativeOnly)
-                .ConfigureAwait(false)
-                .GetAwaiter()
-                .GetResult();
-        
+            GetLegalFromTemplateTimeoutAsync(dest, template, set, nativeOnly).ConfigureAwait(false).GetAwaiter().GetResult();
         public static async Task<AsyncLegalizationResult> GetLegalFromTemplateTimeoutAsync(this ITrainerInfo dest, PKM template, IBattleTemplate set, bool nativeOnly = false)
         {
             AsyncLegalizationResult GetLegal()
@@ -1864,10 +1848,9 @@ namespace PKHeX.Core.AutoMod
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(Timeout));
             try
             {
-                return await Task.Run(GetLegal, cts.Token)
-                    .ConfigureAwait(false);
+                return await Task.Run(GetLegal, cts.Token).ConfigureAwait(false);
             }
-            catch (TaskCanceledException e)
+            catch (TaskCanceledException)
             {
                 return new AsyncLegalizationResult(template, LegalizationResult.Timeout);
             }

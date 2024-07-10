@@ -36,28 +36,21 @@ namespace PKHeX.Core.AutoMod
             var set = new RegenTemplate(pk, tr.Generation);
             var almres = tr.GetLegalFromTemplateTimeout(pk, set);
             var result = almres.Status;
-            
-            return result == LegalizationResult.VersionMismatch 
-                ? throw new MissingMethodException("PKHeX and Plugins have a version mismatch") 
-                : almres.Created;
+            return result == LegalizationResult.VersionMismatch ? throw new MissingMethodException("PKHeX and Plugins have a version mismatch") : almres.Created;
         }
-        
         /// <summary>
         /// Tries to regenerate the <see cref="pk"/> into a valid pkm.
         /// </summary>
         /// <param name="tr">Source/Destination trainer</param>
         /// <param name="pk">Currently invalid pkm data</param>
-        /// <param name="withTimeout">Will timeout after the configured at <see cref="APILegality.Timeout"/> </param>
+        /// Will timeout after the configured at <see cref="APILegality.Timeout"/>
         /// <returns>Legalized PKM (hopefully legal)</returns>
         public static async Task<PKM> LegalizeAsync(this ITrainerInfo tr, PKM pk)
         {
             var set = new RegenTemplate(pk, tr.Generation);
             var almres = await tr.GetLegalFromTemplateTimeoutAsync(pk, set);
             var result = almres.Status;
-            
-            return result == LegalizationResult.VersionMismatch 
-                ? throw new MissingMethodException("PKHeX and Plugins have a version mismatch") 
-                : almres.Created;
+            return result == LegalizationResult.VersionMismatch ? throw new MissingMethodException("PKHeX and Plugins have a version mismatch") : almres.Created;
         }
 
         /// <summary>
@@ -109,7 +102,6 @@ namespace PKHeX.Core.AutoMod
 
             foreach (var r in timedoutSets)
                 Dump(r);
-            
 
             foreach (var r in invalidAPISets)
                 Dump(r, true);
