@@ -1839,6 +1839,7 @@ namespace PKHeX.Core.AutoMod
         /// </summary>
         public static AsyncLegalizationResult GetLegalFromTemplateTimeout(this ITrainerInfo dest, PKM template, IBattleTemplate set, bool nativeOnly = false) =>
             GetLegalFromTemplateTimeoutAsync(dest, template, set, nativeOnly)
+                .ConfigureAwait(false)
                 .GetAwaiter()
                 .GetResult();
         
@@ -1863,7 +1864,8 @@ namespace PKHeX.Core.AutoMod
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(Timeout));
             try
             {
-                return await Task.Run(GetLegal, cts.Token);
+                return await Task.Run(GetLegal, cts.Token)
+                    .ConfigureAwait(false);
             }
             catch (TaskCanceledException e)
             {
