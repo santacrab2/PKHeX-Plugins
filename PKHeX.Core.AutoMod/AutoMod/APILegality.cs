@@ -1837,7 +1837,13 @@ namespace PKHeX.Core.AutoMod
         /// <summary>
         /// Wrapper function for GetLegalFromTemplate but with a Timeout
         /// </summary>
-        public static AsyncLegalizationResult GetLegalFromTemplateTimeout(this ITrainerInfo dest, PKM template, IBattleTemplate set, bool nativeOnly = false)
+        public static AsyncLegalizationResult GetLegalFromTemplateTimeout(this ITrainerInfo dest, PKM template, IBattleTemplate set, bool nativeOnly = false) =>
+            GetLegalFromTemplateTimeoutAsync(dest, template, set, nativeOnly)
+                .ConfigureAwait(false)
+                .GetAwaiter()
+                .GetResult();
+        
+        public static async Task<AsyncLegalizationResult> GetLegalFromTemplateTimeoutAsync(this ITrainerInfo dest, PKM template, IBattleTemplate set, bool nativeOnly = false)
         {
             AsyncLegalizationResult GetLegal()
             {
@@ -1855,9 +1861,16 @@ namespace PKHeX.Core.AutoMod
                 }
             }
 
-            var task = Task.Run(GetLegal);
-            var first = task.TimeoutAfter(new TimeSpan(0, 0, 0, Timeout))?.Result;
-            return first ?? new AsyncLegalizationResult(template, LegalizationResult.Timeout);
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(Timeout));
+            try
+            {
+                return await Task.Run(GetLegal, cts.Token)
+                    .ConfigureAwait(false);
+            }
+            catch (TaskCanceledException e)
+            {
+                return new AsyncLegalizationResult(template, LegalizationResult.Timeout);
+            }
         }
 
         /// <summary>
@@ -1867,17 +1880,6 @@ namespace PKHeX.Core.AutoMod
         {
             public readonly PKM Created = pk;
             public readonly LegalizationResult Status = res;
-        }
-
-        private static async Task<AsyncLegalizationResult?>? TimeoutAfter(this Task<AsyncLegalizationResult> task, TimeSpan timeout)
-        {
-            using var cts = new CancellationTokenSource(timeout);
-            var delay = Task.Delay(timeout, cts.Token);
-            var completedTask = await Task.WhenAny(task, delay).ConfigureAwait(false);
-            if (completedTask != task)
-                return null;
-
-            return await task.ConfigureAwait(false); // will re-fire exception if present
         }
 
         private static GameVersion[] GetPairedVersions(GameVersion version, IEnumerable<GameVersion> versionlist)
