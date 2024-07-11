@@ -83,7 +83,6 @@ namespace PKHeX.Core.AutoMod
             criteria.ForceMinLevelRange = true;
             if (regen.EncounterFilters.Any())
                 encounters = encounters.Where(enc => BatchEditing.IsFilterMatch(regen.EncounterFilters, enc));
-            encounters = encounters.OrderByDescending(z => z.Version == destVer);
             PKM? last = null;
             foreach (var enc in encounters)
             {

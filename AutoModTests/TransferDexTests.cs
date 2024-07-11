@@ -39,7 +39,7 @@ namespace AutoModTests
             var expected = sav.GetExpectedDexCount(cfg);
             expected.Should().NotBe(0);
 
-            var pkms = sav.GenerateTLivingDex(cfg).ToArray();
+            var pkms = sav.GenerateTransferLivingDex(cfg).ToArray();
             var genned = pkms.Length;
             var val = new GenerateResult(genned == expected, expected, genned);
             return val;

@@ -104,16 +104,31 @@ namespace AutoModTests
                 var str = GameInfo.Strings;
                 if (formCount == 1 && cfg.IncludeForms) // Validate through form lists
                     formCount = (byte)FormConverter.GetFormList(s, str.types, str.forms, GameInfo.GenderSymbolUnicode, sav.Context).Length;
-
+                if (s == (ushort)Species.Alcremie)
+                    formCount = (byte)(formCount * 6);
+                uint formarg = 0;
+                byte acform = 0;
                 for (byte f = 0; f < formCount; f++)
                 {
-                    if (!personal.IsPresentInGame(s, f) || FormInfo.IsFusedForm(s, f, sav.Generation) || FormInfo.IsBattleOnlyForm(s, f, sav.Generation) || (FormInfo.IsTotemForm(s, f) && sav.Context is not EntityContext.Gen7) || FormInfo.IsLordForm(s, f, sav.Context))
+                    byte form = f;
+                    if (s == (ushort)Species.Alcremie)
+                    {
+                        form = acform;
+                        if (f % 6 == 0)
+                        {
+                            acform++;
+                            formarg = 0;
+                        }
+                        else
+                            formarg++;
+                    }
+                    if (!personal.IsPresentInGame(s, form) || FormInfo.IsFusedForm(s, form, sav.Generation) || FormInfo.IsBattleOnlyForm(s, form, sav.Generation) || (FormInfo.IsTotemForm(s, form) && sav.Context is not EntityContext.Gen7) || FormInfo.IsLordForm(s, form, sav.Context))
                         continue;
 
-                    var valid = sav.GetRandomEncounter(s, f, cfg.SetShiny, cfg.SetAlpha, cfg.NativeOnly, out PKM? pk);
-                    if (pk is not null && valid && pk.Form == f && !forms.Contains(f))
+                    var valid = sav.GetRandomEncounter(s, form, cfg.SetShiny, cfg.SetAlpha, cfg.NativeOnly, out PKM? pk);
+                    if (pk is not null && valid && pk.Form == form )
                     {
-                        forms.Add(f);
+                        forms.Add(form);
                         if (!cfg.IncludeForms)
                             break;
                     }
