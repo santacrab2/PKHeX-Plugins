@@ -863,8 +863,6 @@ namespace PKHeX.Core.AutoMod
                 }
                 return;
             }
-            // TODO: Something about the gen 5 events. Maybe check for nature and shiny val and not touch the PID in that case?
-            // Also need to figure out hidden power handling in that case.. for PIDType 0 that may isn't even be possible.
 
             switch (enc)
             {
@@ -1773,6 +1771,18 @@ namespace PKHeX.Core.AutoMod
                     };
                 default:
                     break;
+            }
+            if(enc is EncounterEgg && !GameVersion.BDSP.Contains(enc.Version))
+            {
+                return criteria with
+                {
+                    IV_ATK = criteria.IV_ATK,
+                    IV_HP = criteria.IV_HP,
+                    IV_DEF = criteria.IV_DEF,
+                    IV_SPA = criteria.IV_SPA,
+                    IV_SPD = criteria.IV_SPD,
+                    IV_SPE = criteria.IV_SPE
+                };
             }
             return criteria with
             {
