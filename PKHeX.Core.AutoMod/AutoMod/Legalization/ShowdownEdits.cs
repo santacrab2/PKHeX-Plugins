@@ -183,7 +183,7 @@ namespace PKHeX.Core.AutoMod
             var gen = enc.Generation;
             var maxlen = Legal.GetMaxLengthNickname(gen, finallang);
             var newnick = RegenUtil.MutateNickname(set.Nickname, finallang, (GameVersion)pk.Version);
-            if (pk.Format < 3 && newnick?.Length == 0)
+            if (pk.Format < 3 && newnick.Length == 0)
                 newnick = SpeciesName.GetSpeciesName(pk.Species, (int)finallang);
             var nickname = newnick.Length > maxlen ? newnick[..maxlen] : newnick;
             if (!WordFilter.IsFiltered(nickname, out _))

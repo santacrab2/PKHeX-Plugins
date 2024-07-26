@@ -96,7 +96,6 @@ namespace PKHeX.Core.AutoMod
 
                     if (!sav.Personal.IsPresentInGame(s, form) || FormInfo.IsLordForm(s, form, sav.Context) || FormInfo.IsBattleOnlyForm(s, form, sav.Generation) || FormInfo.IsFusedForm(s, form, sav.Generation) || (FormInfo.IsTotemForm(s, form) && sav.Context is not EntityContext.Gen7))
                          continue;
-                     
                     var pk = AddPKM(sav, tr, s, form, cfg.SetShiny, cfg.SetAlpha, cfg.NativeOnly);
                      if (pk is not null && !pklist.Any(x => x.Species == pk.Species && x.Form == pk.Form && x.Species !=869))
                      {
