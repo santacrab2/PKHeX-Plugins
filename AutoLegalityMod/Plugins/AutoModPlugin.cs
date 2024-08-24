@@ -177,7 +177,6 @@ namespace AutoModPlugins
             if (form is null)
                 return;
             WinFormsTranslator.TranslateInterface(form, language);
-         
         }
     }
 }

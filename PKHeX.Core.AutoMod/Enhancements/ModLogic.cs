@@ -75,26 +75,41 @@ namespace PKHeX.Core.AutoMod
                  var str = GameInfo.Strings;
                  if (num_forms == 1 && cfg.IncludeForms) // Validate through form lists
                       num_forms = (byte)FormConverter.GetFormList(s, str.types, str.forms, GameInfo.GenderSymbolUnicode, sav.Context).Length;
-
-                 for (byte f = 0; f < num_forms; f++)
+                if (s == (ushort)Species.Alcremie)
+                    num_forms = (byte)(num_forms * 6);
+                uint formarg = 0;
+                byte acform = 0;
+                for (byte f = 0; f < num_forms; f++)
                  {
-                     if (!sav.Personal.IsPresentInGame(s, f) || FormInfo.IsLordForm(s, f, sav.Context) || FormInfo.IsBattleOnlyForm(s, f, sav.Generation) || FormInfo.IsFusedForm(s, f, sav.Generation) || (FormInfo.IsTotemForm(s, f) && sav.Context is not EntityContext.Gen7))
-                         continue;
+                    var form = cfg.IncludeForms ? f : GetBaseForm(s, f, sav);
+                    if (s == (ushort)Species.Alcremie)
+                    {
+                        form = acform;
+                        if (f % 6 == 0)
+                        {
+                            acform++;
+                            formarg = 0;
+                        }
+                        else
+                            formarg++;
+                    }
 
-                     var form = cfg.IncludeForms ? f : GetBaseForm(s, f, sav);
-                     var pk = AddPKM(sav, tr, s, form, cfg.SetShiny, cfg.SetAlpha, cfg.NativeOnly);
-                     if (pk is not null && !pklist.Any(x => x.Species == pk.Species && x.Form == pk.Form))
+                    if (!sav.Personal.IsPresentInGame(s, form) || FormInfo.IsLordForm(s, form, sav.Context) || FormInfo.IsBattleOnlyForm(s, form, sav.Generation) || FormInfo.IsFusedForm(s, form, sav.Generation) || (FormInfo.IsTotemForm(s, form) && sav.Context is not EntityContext.Gen7))
+                         continue;
+                    var pk = AddPKM(sav, tr, s, form, cfg.SetShiny, cfg.SetAlpha, cfg.NativeOnly);
+                     if (pk is not null && !pklist.Any(x => x.Species == pk.Species && x.Form == pk.Form && x.Species !=869))
                      {
-                          pklist.Add(pk);
-                          if (!cfg.IncludeForms)
-                              break;
+                        if (s == (ushort)Species.Alcremie) pk.ChangeFormArgument(formarg);
+                        pklist.Add(pk);
+                        if (!cfg.IncludeForms)
+                            break;
                      }
                  }
             });
             return pklist.OrderBy(z=>z.Species);
         }
-        public static IEnumerable<PKM> GenerateTLivingDex(this SaveFile sav) => sav.GenerateTLivingDex(cfg);
-        public static IEnumerable<PKM> GenerateTLivingDex(this SaveFile sav, LivingDexConfig cfg)
+        public static IEnumerable<PKM> GenerateTransferLivingDex(this SaveFile sav) => sav.GenerateTransferLivingDex(cfg);
+        public static IEnumerable<PKM> GenerateTransferLivingDex(this SaveFile sav, LivingDexConfig cfg)
         {
             var resetevent = new ManualResetEvent(false);
             var DestinationSave = SaveUtil.GetBlankSAV(cfg.TransferVersion, "ALM");
@@ -117,7 +132,6 @@ namespace PKHeX.Core.AutoMod
                 {
                     if (!DestinationSave.Personal.IsPresentInGame(s, f) || FormInfo.IsLordForm(s, f, sav.Context) || FormInfo.IsBattleOnlyForm(s, f, sav.Generation) || FormInfo.IsFusedForm(s, f, sav.Generation) || (FormInfo.IsTotemForm(s, f) && sav.Context is not EntityContext.Gen7))
                         continue;
-
                     var form = cfg.IncludeForms ? f : GetBaseForm(s, f, sav);
                     var pk = AddPKM(sav, tr, s, form, cfg.SetShiny, cfg.SetAlpha, cfg.NativeOnly);
                     if (pk is not null && !pklist.Any(x => x.Species == pk.Species && x.Form == pk.Form))
@@ -234,7 +248,7 @@ namespace PKHeX.Core.AutoMod
                 return null;
 
             var setText = new ShowdownSet(blank).Text.Split('\r')[0];
-            if (shiny && !SimpleEdits.IsShinyLockedSpeciesForm(blank.Species, blank.Form)||(shiny && tr.Generation!=6 && blank.Species != (ushort)Species.Vivillon && blank.Form !=18))
+            if ((shiny && !SimpleEdits.IsShinyLockedSpeciesForm(blank.Species, blank.Form))||(shiny && tr.Generation!=6 && blank.Species != (ushort)Species.Vivillon && blank.Form !=18))
                 setText += Environment.NewLine + "Shiny: Yes";
 
             if (template is IAlphaReadOnly && alpha && tr.Version == GameVersion.PLA)
@@ -276,7 +290,6 @@ namespace PKHeX.Core.AutoMod
             var species = pk.Species;
             switch ((Species)species)
             {
-                
                 case Species.Floette when form == 5:
                     return true;
                 case Species.Shaymin

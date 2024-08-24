@@ -9,6 +9,7 @@ namespace PKHeX.Core.AutoMod
     /// </summary>
     public static class TrainerSettings
     {
+        private static readonly string ProcessPath = Environment.ProcessPath ?? string.Empty;
         private static readonly TrainerDatabase Database = new();
         private static readonly string TrainerPath = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath)!, "trainers");
         private static readonly SimpleTrainerInfo DefaultFallBack6 = new(GameVersion.AS);

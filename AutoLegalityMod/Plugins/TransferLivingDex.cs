@@ -29,7 +29,7 @@ namespace AutoModPlugins
             }
 
             var sav = SaveFileEditor.SAV;
-            Span<PKM> pkms = sav.GenerateTLivingDex().ToArray();
+            Span<PKM> pkms = sav.GenerateTransferLivingDex().ToArray();
             Span<PKM> bd = sav.BoxData.ToArray();
             if (pkms.Length > bd.Length)
             {

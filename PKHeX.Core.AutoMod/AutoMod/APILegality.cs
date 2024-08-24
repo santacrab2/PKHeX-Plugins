@@ -84,7 +84,6 @@ namespace PKHeX.Core.AutoMod
             criteria.ForceMinLevelRange = true;
             if (regen.EncounterFilters.Any())
                 encounters = encounters.Where(enc => BatchEditing.IsFilterMatch(regen.EncounterFilters, enc));
-            encounters = encounters.OrderByDescending(z => z.Version == destVer);
             PKM? last = null;
             foreach (var enc in encounters)
             {
@@ -141,7 +140,6 @@ namespace PKHeX.Core.AutoMod
                 raw = raw.SanityCheckLocation(enc);
                 if (raw.IsEgg) // PGF events are sometimes eggs. Force hatch them before proceeding
                     raw.HandleEggEncounters(enc, tr);
-                
                 raw.PreSetPIDIV(enc, set, criteria);
 
                 // Transfer any VC1 via VC2, as there may be GSC exclusive moves requested.
@@ -170,7 +168,7 @@ namespace PKHeX.Core.AutoMod
                     continue;
 
                 pk = pk.Clone(); // Handle Nickname-Trash issues (weedle word filter)
-                if (HomeTrackerUtil.IsRequired(enc, pk) && !AllowHOMETransferGeneration)
+                if (dest.Generation >= 8 && HomeTrackerUtil.IsRequired(enc, pk) && !AllowHOMETransferGeneration)
                     continue;
 
                 // Apply final details
@@ -220,6 +218,11 @@ namespace PKHeX.Core.AutoMod
 
         private static PKM GetPokemonFromEncounter(this IEncounterable enc, ITrainerInfo tr, EncounterCriteria criteria, IBattleTemplate set)
         {
+            if(enc is EncounterGift3 wc)
+            {
+                if (wc.Species == (ushort)Species.Jirachi && tr.Language == (byte)LanguageID.Japanese)
+                    tr = tr.MutateLanguage(LanguageID.English,tr.Version);
+            }
             var basepkm = enc.ConvertToPKM(tr, criteria);
 
             // If the encounter is a Wurmple, we need to make sure the evolution is correct.
@@ -318,14 +321,14 @@ namespace PKHeX.Core.AutoMod
             if (gamelist.Contains(GameVersion.HGSS))
             {
                 gamelist = gamelist.Where(z => z != GameVersion.HGSS).ToArray();
-                gamelist = gamelist.Append(GameVersion.HG).ToArray();
-                gamelist = gamelist.Append(GameVersion.SS).ToArray();
+                gamelist = [.. gamelist, GameVersion.HG];
+                gamelist = [.. gamelist, GameVersion.SS];
             }
             if (gamelist.Contains(GameVersion.FRLG))
             {
                 gamelist = gamelist.Where(z => z != GameVersion.FRLG).ToArray();
-                gamelist = gamelist.Append(GameVersion.FR).ToArray();
-                gamelist = gamelist.Append(GameVersion.LG).ToArray();
+                gamelist = [.. gamelist, GameVersion.FR];
+                gamelist = [.. gamelist, GameVersion.LG];
             }
             return gamelist;
         }
@@ -834,7 +837,7 @@ namespace PKHeX.Core.AutoMod
             pk.ForceHatchPKM();
             if (enc is MysteryGift { IsEgg: true })
             {
-                if (enc is WC3)
+                if (enc is EncounterGift3)
                     pk.MetLevel = 0; // hatched
 
                 pk.Language = tr.Language;
@@ -897,8 +900,6 @@ namespace PKHeX.Core.AutoMod
                 }
                 return;
             }
-            // TODO: Something about the gen 5 events. Maybe check for nature and shiny val and not touch the PID in that case?
-            // Also need to figure out hidden power handling in that case.. for PIDType 0 that may isn't even be possible.
 
             switch (enc)
             {
@@ -1430,7 +1431,7 @@ namespace PKHeX.Core.AutoMod
         {
             if (Method == PIDType.None)
             {
-                if (enc is WC3 wc3)
+                if (enc is EncounterGift3 wc3)
                 {
                     Method = wc3.Method;
                 }
@@ -1459,7 +1460,7 @@ namespace PKHeX.Core.AutoMod
                 iterPKM.SetAbilityIndex(ability_idx);
 
             var count = 0;
-            var isWishmaker = Method == PIDType.BACD_R && shiny && enc is WC3 { OriginalTrainerName: "WISHMKR" };
+            var isWishmaker = Method == PIDType.BACD_R && shiny && enc is EncounterGift3 { OriginalTrainerName: "WISHMKR" };
             var compromise = false;
             var gr = pk.PersonalInfo.Gender;
             do
@@ -1475,9 +1476,8 @@ namespace PKHeX.Core.AutoMod
                 }
                 if (PokeWalkerSeedFail(seed, Method, pk, iterPKM))
                     continue;
-                if (IsMatchFromPKHeX(pk, iterPKM, HPType, shiny, gr, set, enc, seed, Method))
+                if (IsMatchFromPKHeX(pk, iterPKM, HPType, shiny, gr, enc, seed, Method))
                     return;
-               
                 PIDGenerator.SetValuesFromSeed(pk, Method, seed);
                 if (pk.AbilityNumber != iterPKM.AbilityNumber )
                     continue;
@@ -1533,9 +1533,8 @@ namespace PKHeX.Core.AutoMod
                     break;
             } while (++count < 5_000_000);
         }
-        private static bool IsMatchFromPKHeX(PKM pk, PKM iterPKM, int HPType, bool shiny, byte gr, IBattleTemplate set, IEncounterable enc, uint seed, PIDType Method)
+        private static bool IsMatchFromPKHeX(PKM pk, PKM iterPKM, int HPType, bool shiny, byte gr, IEncounterable enc, uint seed, PIDType Method)
         {
-            
             if (pk.AbilityNumber != iterPKM.AbilityNumber && pk.Nature != iterPKM.Nature)
                 return false;
 
@@ -1586,15 +1585,6 @@ namespace PKHeX.Core.AutoMod
             if (!new LegalityAnalysis(pk).Valid)
                 return false;
             return true;
-        }
-        private static byte GetUnownForm(uint seed, bool hgss)
-        {
-            // ABCD|E(Item)|F(Form) determination
-            if (!hgss)
-                return 8; // Always 100% form as 'I' in one of the rooms. Don't need to check rand(1) choice.
-
-            var formSeed = LCRNG.Next6(seed);
-            return RuinsOfAlph4.GetEntranceForm(formSeed); // !?
         }
         private static int GetRequiredAbilityIdx(PKM pkm, IBattleTemplate set)
         {
@@ -1649,7 +1639,7 @@ namespace PKHeX.Core.AutoMod
             {
                 3 => info.EncounterMatch switch
                 {
-                    WC3 g => g.Method,
+                    EncounterGift3 g => g.Method,
                     EncounterStatic3 when pk.Version == GameVersion.CXD => PIDType.CXD,
                     EncounterStatic3Colo when pk.Version == GameVersion.CXD => PIDType.CXD,
                     EncounterStatic3XD when pk.Version == GameVersion.CXD => PIDType.CXD,
@@ -1821,6 +1811,18 @@ namespace PKHeX.Core.AutoMod
                 default:
                     break;
             }
+            if(enc is EncounterEgg && !GameVersion.BDSP.Contains(enc.Version))
+            {
+                return criteria with
+                {
+                    IV_ATK = criteria.IV_ATK,
+                    IV_HP = criteria.IV_HP,
+                    IV_DEF = criteria.IV_DEF,
+                    IV_SPA = criteria.IV_SPA,
+                    IV_SPD = criteria.IV_SPD,
+                    IV_SPE = criteria.IV_SPE
+                };
+            }
             return criteria with
             {
                 IV_ATK = criteria.IV_ATK == 0 ? 0 : -1,
@@ -1871,7 +1873,9 @@ namespace PKHeX.Core.AutoMod
         /// <summary>
         /// Wrapper function for GetLegalFromTemplate but with a Timeout
         /// </summary>
-        public static AsyncLegalizationResult GetLegalFromTemplateTimeout(this ITrainerInfo dest, PKM template, IBattleTemplate set, bool nativeOnly = false)
+        public static AsyncLegalizationResult GetLegalFromTemplateTimeout(this ITrainerInfo dest, PKM template, IBattleTemplate set, bool nativeOnly = false) =>
+            GetLegalFromTemplateTimeoutAsync(dest, template, set, nativeOnly).ConfigureAwait(false).GetAwaiter().GetResult();
+        public static async Task<AsyncLegalizationResult> GetLegalFromTemplateTimeoutAsync(this ITrainerInfo dest, PKM template, IBattleTemplate set, bool nativeOnly = false)
         {
             AsyncLegalizationResult GetLegal()
             {
@@ -1889,9 +1893,15 @@ namespace PKHeX.Core.AutoMod
                 }
             }
 
-            var task = Task.Run(GetLegal);
-            var first = task.TimeoutAfter(new TimeSpan(0, 0, 0, Timeout))?.Result;
-            return first ?? new AsyncLegalizationResult(template, LegalizationResult.Timeout);
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(Timeout));
+            try
+            {
+                return await Task.Run(GetLegal, cts.Token).ConfigureAwait(false);
+            }
+            catch (TaskCanceledException)
+            {
+                return new AsyncLegalizationResult(template, LegalizationResult.Timeout);
+            }
         }
 
         /// <summary>
@@ -1901,17 +1911,6 @@ namespace PKHeX.Core.AutoMod
         {
             public readonly PKM Created = pk;
             public readonly LegalizationResult Status = res;
-        }
-
-        private static async Task<AsyncLegalizationResult?>? TimeoutAfter(this Task<AsyncLegalizationResult> task, TimeSpan timeout)
-        {
-            using var cts = new CancellationTokenSource(timeout);
-            var delay = Task.Delay(timeout, cts.Token);
-            var completedTask = await Task.WhenAny(task, delay).ConfigureAwait(false);
-            if (completedTask != task)
-                return null;
-
-            return await task.ConfigureAwait(false); // will re-fire exception if present
         }
 
         private static GameVersion[] GetPairedVersions(GameVersion version, IEnumerable<GameVersion> versionlist)

@@ -69,7 +69,7 @@ namespace PKHeX.Core.AutoMod
         {
             if (pk.Ability != set.Ability)
                 pk.RefreshAbility(pk is PK5 { HiddenAbility: true } ? 2 : pk.AbilityNumber >> 1);
-            if (pk.Ability != set.Ability && pk.Context >= EntityContext.Gen8 && set.Ability != -1)
+            if (pk.Ability != set.Ability && pk.Context >= EntityContext.Gen6 && set.Ability != -1)
                 pk.RefreshAbility(pk is PK5 { HiddenAbility: true } ? 2 : pk.PersonalInfo.GetIndexOfAbility(set.Ability));
             if (preference <= 0)
                 return;
@@ -102,6 +102,7 @@ namespace PKHeX.Core.AutoMod
         /// <param name="lang">Language to apply</param>
         public static void SetSpeciesLevel(this PKM pk, IBattleTemplate set, byte Form, IEncounterable enc, LanguageID? lang)
         {
+            var currentlang = (LanguageID)pk.Language;
             pk.ApplySetGender(set);
             pk.SetRecordFlags(set.Moves); // Set record flags before evolution (TODO: what if middle evolution has exclusive record moves??)
 
@@ -149,7 +150,6 @@ namespace PKHeX.Core.AutoMod
             if (set.Level != 100 && set.Level == enc.LevelMin && pk.Format is 3 or 4)
                 pk.EXP = Experience.GetEXP((byte)(enc.LevelMin + 1), PersonalTable.HGSS[enc.Species].EXPGrowth) - 1;
 
-            var currentlang = (LanguageID)pk.Language;
             var finallang = lang ?? currentlang;
             if (finallang == LanguageID.Hacked)
                 finallang = LanguageID.English;
@@ -184,6 +184,8 @@ namespace PKHeX.Core.AutoMod
             var gen = enc.Generation;
             var maxlen = Legal.GetMaxLengthNickname(gen, finallang);
             var newnick = RegenUtil.MutateNickname(set.Nickname, finallang, (GameVersion)pk.Version);
+            if (pk.Format < 3 && newnick.Length == 0)
+                newnick = SpeciesName.GetSpeciesName(pk.Species, (int)finallang);
             var nickname = newnick.Length > maxlen ? newnick[..maxlen] : newnick;
             if (!WordFilter.IsFiltered(nickname, out _))
             {
@@ -399,9 +401,6 @@ namespace PKHeX.Core.AutoMod
                 13 => 238,
                 17 => 231,
                 > 25 => 225
-
-
-
             };
         }
     }
