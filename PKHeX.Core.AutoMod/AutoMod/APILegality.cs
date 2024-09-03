@@ -1426,12 +1426,15 @@ namespace PKHeX.Core.AutoMod
             var isWishmaker = Method == PIDType.BACD_R && shiny && enc is EncounterGift3 { OriginalTrainerName: "WISHMKR" };
             var compromise = false;
             var gr = pk.PersonalInfo.Gender;
+            uint seed = Util.Rand32();
+            if (IsMatchFromPKHeX(pk, iterPKM, HPType, shiny, gr, enc, seed, Method))
+                return;
             do
             {
                 if (count >= 2_500_000)
                     compromise = true;
 
-                uint seed = Util.Rand32();
+                seed = Util.Rand32();
                 if (isWishmaker)
                 {
                     seed = WC3Seeds.GetShinyWishmakerSeed(iterPKM.Nature);
@@ -1439,8 +1442,7 @@ namespace PKHeX.Core.AutoMod
                 }
                 if (PokeWalkerSeedFail(seed, Method, pk, iterPKM))
                     continue;
-                if (IsMatchFromPKHeX(pk, iterPKM, HPType, shiny, gr, enc, seed, Method))
-                    return;
+                
                 PIDGenerator.SetValuesFromSeed(pk, Method, seed);
                 if (pk.AbilityNumber != iterPKM.AbilityNumber )
                     continue;
