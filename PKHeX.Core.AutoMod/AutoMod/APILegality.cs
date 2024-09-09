@@ -274,7 +274,7 @@ namespace PKHeX.Core.AutoMod
                 return single;
 
             var versionlist = GameUtil.GetVersionsWithinRange(template, template.Format);
-            var gamelist = (!nativeOnly && AllowHOMETransferGeneration) ? [.. versionlist.OrderByDescending(c => c.GetGeneration())] : GetPairedVersions(destVer, versionlist);
+            var gamelist = !nativeOnly ? [.. versionlist.OrderByDescending(c => c.GetGeneration())] : GetPairedVersions(destVer, versionlist);
             if (PrioritizeGame && !nativeOnly)
                 gamelist = PrioritizeGameVersion == GameVersion.Any ? PrioritizeVersion(gamelist, destVer.GetIsland()) : PrioritizeVersion(gamelist, PrioritizeGameVersion);
 
