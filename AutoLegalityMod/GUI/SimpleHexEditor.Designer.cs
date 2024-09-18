@@ -97,7 +97,7 @@ namespace AutoModPlugins.GUI
             this.RTB_RAM.Location = new System.Drawing.Point(9, 10);
             this.RTB_RAM.Name = "RTB_RAM";
             this.RTB_RAM.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.RTB_RAM.Size = new System.Drawing.Size(364, 292);
+            this.RTB_RAM.Size = new System.Drawing.Size(312, 292);
             this.RTB_RAM.TabIndex = 0;
             this.RTB_RAM.Text = "";
             // 
