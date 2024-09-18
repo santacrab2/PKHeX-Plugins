@@ -1040,9 +1040,7 @@ namespace PKHeX.Core.AutoMod
             ulong seed = Util.Rand.Rand64();
             do
             {
-                seed++;
                 var pi = PersonalTable.SV.GetFormEntry(enc.Species, enc.Form);
-
                 var rand = new Xoroshiro128Plus(seed);
                 seed = rand.NextInt(uint.MaxValue);
                 if (!enc.CanBeEncountered((uint)seed))
