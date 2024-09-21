@@ -65,6 +65,8 @@ namespace PKHeX.Core.AutoMod
             {
                 set.Gender = 0;
             }
+            else
+                set.Gender = 2;
         }
 
         public static string GetRegenText(this PKM pk) => pk.Species == 0 ? string.Empty : new RegenTemplate(pk).Text;

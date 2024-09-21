@@ -447,6 +447,8 @@ namespace PKHeX.Core.AutoMod
                         return false;
                 }
             }
+            if (set.EVs.Sum() > 510)
+                return false;
 
             return destVer.ExistsInGame(set.Species, set.Form);
         }
