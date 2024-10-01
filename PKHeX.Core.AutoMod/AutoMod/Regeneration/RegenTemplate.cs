@@ -20,7 +20,7 @@ namespace PKHeX.Core.AutoMod
         public Nature Nature { get; set; }
         public string FormName { get; set; }
         public byte Form { get; set; }
-        public int HiddenPowerType { get; set; }
+        public sbyte HiddenPowerType { get; set; }
         public bool CanGigantamax { get; set; }
         public byte DynamaxLevel { get; set; }
         public MoveType TeraType { get; set; }
