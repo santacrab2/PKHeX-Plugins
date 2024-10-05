@@ -12,7 +12,7 @@ Regular builds will usually succeed unless there are changes that are incompatib
 - Clone the PKHeX-Plugins repository using: `$ git clone https://github.com/architdate/PKHeX-Plugins.git`.
 - Right-click on the solution and click `Rebuild All`.
 - These DLLs should be placed into a `plugins` directory where the PKHeX executable is.
-   - The compiled DLL `AutoModPlugins.dll` for AutoLegality will be in the `AutoLegalityMod\bin\Release\net7.0-windows` directory.
+   - The compiled DLL `AutoModPlugins.dll` for AutoLegality will be in the `AutoLegalityMod\bin\Release\net8.0-windows` directory.
 
 **Bleeding Edge Builds**  
 Use this build method only if the regular builds fail. The Azure Pipelines CI will always use the bleeding edge build method. More details regarding this can be seen in the [azure-pipelines.yml](https://github.com/architdate/PKHeX-Plugins/blob/master/azure-pipelines.yml) file.
@@ -22,8 +22,8 @@ Use this build method only if the regular builds fail. The Azure Pipelines CI wi
 - Open the PKHeX solution, change your environment to `Release`, right-click on the `PKHeX.Core` project, and click `Rebuild` to build the project.
 - Open the PKHeX-Plugins solution and right-click to `Restore NuGet Packages`.
 - Next, replace the most recent NuGet packages with the newly-built `PKHeX.Core.dll` files.
-   - Copy the `PKHeX.Core.dll` file located in `PKHeX.Core\bin\Release\net7.0` to the following folder with the most recent date:
-       * `C:\Users\%USERNAME%\.nuget\packages\pkhex.core\YY.MM.DD\lib\net7.0`
+   - Copy the `PKHeX.Core.dll` file located in `PKHeX.Core\bin\Release\net8.0` to the following folder with the most recent date:
+       * `C:\Users\%USERNAME%\.nuget\packages\pkhex.core\YY.MM.DD\lib\net8.0`
 - Right click the PKHeX-Plugins solution and `Rebuild All`. This should build the mod with the latest `PKHeX.Core` version so that it can be used with the latest commit of PKHeX.
 - The compiled DLLs will be in the same location as with the regular builds. 
 
@@ -35,7 +35,7 @@ To use the plugins:
 - The plugins should be available for use in `Tools > Auto Legality Mod` drop-down menu.
 
 ## Support Server
-Please refer to the [Wiki](https://github.com/architdate/PKHeX-Plugins/wiki) first for usage information and help first, as most queries are answered there. If you have looked and need additional help, you can join the dedicated Discord server for this mod!
+Please refer to the [Wiki](https://github.com/santacrab2/PKHeX-Plugins/wiki) first for usage information and help first, as most queries are answered there. If you have looked and need additional help, you can join the dedicated Discord server for this mod!
 
 [<img src="https://discord.com/api/guilds/872587205787394119/widget.png?style=banner2">](https://discord.com/invite/vxT5sSHvvn) <br>
 **Website with Links to downloads for this and other projects by Santacrab**
