@@ -449,7 +449,7 @@ namespace PKHeX.Core.AutoMod
                         return false;
                 }
             }
-            if (enc.Generation > 2 && set.EVs.Sum() > 510)
+            if (enc.Generation > 2 && set.EVs.Sum() > 510 && destVer != GameVersion.GP && destVer != GameVersion.GE)
                 return false;
 
             return destVer.ExistsInGame(set.Species, set.Form);
@@ -1297,7 +1297,7 @@ namespace PKHeX.Core.AutoMod
                 {
                     var gender_roll = rng.NextUInt(252) + 1;
                     var fin_gender = gender_roll < ratio ? 1 : 0;
-                    if (gender is not null && gender!=(byte)Gender.Genderless&& gender != fin_gender)
+                    if (gender is not null && gender != (byte)Gender.Genderless && gender != fin_gender)
                         continue;
                 }
 
@@ -1336,8 +1336,8 @@ namespace PKHeX.Core.AutoMod
                     if (ivs[i] == -1)
                         ivs[i] = (int)ivs2[i];
                 }
-               if (!criteria.IsIVsCompatibleSpeedLast(ivs,8))
-                   continue;
+                if (!criteria.IsIVsCompatibleSpeedLast(ivs, 8))
+                    continue;
                 pk.IV_HP = ivs[0];
                 pk.IV_ATK = ivs[1];
                 pk.IV_DEF = ivs[2];
@@ -1439,7 +1439,6 @@ namespace PKHeX.Core.AutoMod
                 if (PokeWalkerSeedFail(seed, Method, pk, iterPKM))
                     continue;
                 PIDGenerator.SetValuesFromSeed(pk, Method, seed);
-                
                 if (pk.AbilityNumber != iterPKM.AbilityNumber )
                     continue;
                 if (!compromise && pk.Nature != iterPKM.Nature)
