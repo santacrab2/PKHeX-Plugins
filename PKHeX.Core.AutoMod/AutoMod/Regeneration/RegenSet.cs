@@ -40,6 +40,8 @@ namespace PKHeX.Core.AutoMod
             modified.Add($".MetMonth={pk.MetMonth}");
             modified.Add($".MetYear={pk.MetYear}");
             modified.Add($".MetLevel={pk.MetLevel}");
+            if(pk is IFormArgument fa && fa.FormArgument != 0)
+                modified.Add($".FormArgument={fa.FormArgument}");
             if(modified.Count > 0)
                 Batch = new StringInstructionSet(modified.ToArray().AsSpan());
         }
