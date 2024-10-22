@@ -36,9 +36,7 @@ namespace PKHeX.Core.AutoMod
                 if (rib.HasRibbon)
                     modified.Add($".{rib.Name}=true");
             modified.Add($".MetLocation={pk.MetLocation}");
-            modified.Add($".MetDay={pk.MetDay}");
-            modified.Add($".MetMonth={pk.MetMonth}");
-            modified.Add($".MetYear={pk.MetYear}");
+            modified.Add($".MetDate={pk.MetDate}");
             modified.Add($".MetLevel={pk.MetLevel}");
             if(pk is IFormArgument fa && fa.FormArgument != 0)
                 modified.Add($".FormArgument={fa.FormArgument}");
