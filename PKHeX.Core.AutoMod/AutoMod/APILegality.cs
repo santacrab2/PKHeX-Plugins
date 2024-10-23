@@ -1102,7 +1102,7 @@ namespace PKHeX.Core.AutoMod
                     if (ivs[i] == UNSET)
                         ivs[i] = (int)rand.NextInt(MAX + 1);
                 }
-                if (!criteria.IsCompatibleIVs(ivs))
+                if (!criteria.IsIVsCompatibleSpeedLast(ivs,9))
                     continue;
                 pk.IV_HP = ivs[0];
                 pk.IV_ATK = ivs[1];
@@ -1372,7 +1372,6 @@ namespace PKHeX.Core.AutoMod
 
             if (template.Form != pk.Form && !FormInfo.IsFormChangeable(pk.Species, pk.Form, template.Form, EntityContext.Gen9, pk.Context)) // match form -- Toxtricity etc
                 return false;
-
             return template.Shiny == pk.IsShiny;
         }
 
