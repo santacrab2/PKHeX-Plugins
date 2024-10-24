@@ -369,7 +369,8 @@ namespace PKHeX.Core.AutoMod
                     pk.HeldItem = 1778;
                     break;
                 case Species.Ogerpon:
-                    pk.HeldItem = FormItem.GetItemOgerpon(pk.Form);
+                    if(pk.Form != 0)
+                        pk.HeldItem = FormItem.GetItemOgerpon(pk.Form);
                     break;
             }
         }
