@@ -44,7 +44,7 @@ jobs:
       run: tree
 
     - name: Show Github dir
-      run: dir /S
+      run: dir ${{ github.workspace }} /S
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
