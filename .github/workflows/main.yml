@@ -41,9 +41,19 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{ github.workspace }}\PKHeX\PKHeX.sln
 
 
-    - name: Show Nuget Dirs
-      run: |
-        dir /S
+    - name: List subfolders
+      id: list-subfolders
+      uses: Drafteame/list-folders-action@main
+      with:
+        paths: |
+         ${{ github.workspace }}
+         ${{ runner.temp }}
+
+    - name: Output folders with base path
+      run: echo "Folders with base path: ${{ steps.list-subfolders.outputs.folders }}"
+
+    - name: Output folders by path
+      run: echo "Folders by path: ${{ steps.list-subfolders.outputs.folders_by_path }}"
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
