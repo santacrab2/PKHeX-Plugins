@@ -49,10 +49,13 @@ jobs:
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
     - name: list dirs 
-      run: dir C:\Users\runneradmin\.nuget\packages\pkhex.core
+      run: | 
+        dir C:\Users\runneradmin\.nuget\packages\pkhex.core
+        echo "pkhexcorever=24.7.27" | Out-File -FilePath $env:GITHUB_ENV -Append
+        echo ${{ env.pkhexcorever }}
      
     - name: copy latest dll to nuget pkhex.core dir
-      run: XCOPY ${{ github.workspace }}\PKHeX.Core\bin\Release\net8.0\PKHeX.Core.dll C:\Users\runneradmin\.nuget\packages\pkhex.core\24.7.27\lib\net8.0 /Y 
+      run: XCOPY ${{ github.workspace }}\PKHeX\PKHeX.Core\bin\Release\net8.0\PKHeX.Core.dll C:\Users\runneradmin\.nuget\packages\pkhex.core\24.7.27\lib\net8.0 /Y 
       
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
