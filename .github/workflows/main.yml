@@ -48,7 +48,7 @@ jobs:
       run: tree
       
     - name: list dirs 
-       run: | 
+       run: |
          dir C:\Users\%USERNAME%\.nuget\packages\pkhex.core\
          dir D:\Users\%USERNAME%\.nuget\packages\pkhex.core\
          
