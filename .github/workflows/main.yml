@@ -48,12 +48,10 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Get pkhex.core folder path
-      run: |
-        FOR /F "usebackq delims=" %%p IN (`dir C:\Users\runneradmin\.nuget\packages\pkhex.core /s /b /ad ^| find "."`) DO (set "DIRPATH=%%p")
-        echo %DIRPATH%
-        echo "pkhexcorepath=%DIRPATH%" | Out-File -FilePath $env:GITHUB_ENV -Append
-        echo ${{ env.pkhexcorepath }}
+    #- name: Get pkhex.core folder path
+    #  run: |
+    #   echo "pkhexcorepath=%DIRPATH%" | Out-File -FilePath $env:GITHUB_ENV -Append
+    #    echo ${{ env.pkhexcorepath }}
      
     - name: copy latest dll to nuget pkhex.core dir
       run: XCOPY ${{ github.workspace }}\PKHeX\PKHeX.Core\bin\Release\net8.0\PKHeX.Core.dll C:\Users\runneradmin\.nuget\packages\pkhex.core\24.7.27\lib\net8.0 /Y 
