@@ -51,6 +51,8 @@ jobs:
     - name: list dirs 
       run: dir C:\Users\runneradmin\.nuget\packages\pkhex.core
      
+    - name: copy latest dll to nuget pkhex.core dir
+      run: XCOPY ${{ github.workspace }}\PKHeX.Core\bin\Release\net8.0\PKHeX.Core.dll C:\Users\runneradmin\.nuget\packages\pkhex.core\24.7.27\lib\net8.0 /Y 
       
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
