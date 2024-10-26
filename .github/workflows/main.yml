@@ -50,7 +50,7 @@ jobs:
 
     - name: Get pkhex.core version
       run: |
-       cat Directory.Build.props | grep "<Version>"
+       xmllint --xpath '//Version/text()' Directory.Build.props
        echo "pkhexcorever=24.7.27" | Out-File -FilePath $env:GITHUB_ENV -Append
        echo ${{ env.pkhexcorever }}
      
