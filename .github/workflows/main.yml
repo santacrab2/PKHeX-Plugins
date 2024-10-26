@@ -50,7 +50,7 @@ jobs:
 
     - name: Get pkhex.core version
       run: |
-          VERSIONNAME=$(xmllint --xpath '//Version/text()')
+          VERSIONNAME=$(xmllint --xpath '//Version/text()' Directory.Build.props)
           echo "VERSIONNAME=$VERSIONNAME" >> $GITHUB_ENV
           echo VERSIONNAME is: $VERSIONNAME      
      
