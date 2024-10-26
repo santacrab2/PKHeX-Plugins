@@ -44,14 +44,9 @@ jobs:
       run: | 
         echo 'Workspace path ${{ github.workspace }} - runner.temp ${{ runner.temp }}'  
         
-    - name: Show Github tree
-      run: tree
-      
     - name: list dirs 
-      run: |
-        dir C:\Users\%USERNAME%\.nuget\packages\pkhex.core\
-        dir D:\Users\%USERNAME%\.nuget\packages\pkhex.core\
-         
+      run: dir C:\Users\runneradmin\.nuget\packages\
+                  
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
