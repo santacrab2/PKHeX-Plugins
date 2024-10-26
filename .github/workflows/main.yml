@@ -50,9 +50,9 @@ jobs:
 
     - name: Get pkhex.core version
       run: |
-       xmllint --xpath '//Version/text()' Directory.Build.props
-       echo "pkhexcorever=24.7.27" | Out-File -FilePath $env:GITHUB_ENV -Append
-       echo ${{ env.pkhexcorever }}
+          VERSIONNAME=$(xmllint --xpath '//Version/text()')
+          echo "VERSIONNAME=$VERSIONNAME" >> $GITHUB_ENV
+          echo VERSIONNAME is: $VERSIONNAME      
      
     - name: copy latest dll to nuget pkhex.core dir
       run: XCOPY ${{ github.workspace }}\PKHeX\PKHeX.Core\bin\Release\net8.0\PKHeX.Core.dll C:\Users\runneradmin\.nuget\packages\pkhex.core\24.7.27\lib\net8.0 /Y 
