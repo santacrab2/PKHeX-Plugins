@@ -50,7 +50,7 @@ jobs:
 
     - name: Get pkhex.core version
       run: |
-       nuget search pkhex.core
+       cat Directory.Build.props | grep "<Version>"
        echo "pkhexcorever=24.7.27" | Out-File -FilePath $env:GITHUB_ENV -Append
        echo ${{ env.pkhexcorever }}
      
