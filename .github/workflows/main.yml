@@ -43,14 +43,14 @@ jobs:
     - name: Show Github infos
       run: | 
         echo 'Workspace path ${{ github.workspace }} - runner.temp ${{ runner.temp }}'  
-        
-    - name: list dirs 
-      run: dir C:\Users\runneradmin\.nuget\packages\
-                  
+                          
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
+    - name: list dirs 
+      run: dir C:\Users\runneradmin\.nuget\packages\
+      
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
