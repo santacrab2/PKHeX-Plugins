@@ -24,6 +24,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Show Github dir
+      run: |
+        whoami
+        
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1
 
@@ -42,9 +46,6 @@ jobs:
 
     - name: Show Github tree
       run: tree
-
-    - name: Show Github dir
-      run: dir ${{ github.workspace }}
 
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
