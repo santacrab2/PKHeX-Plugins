@@ -51,8 +51,8 @@ jobs:
     - name: Get pkhex.core version
       run: |
           xmllint --xpath '//Version/text()' Directory.Build.props >> version
-          cat version
-          echo "VERSIONNAME=$(cat version)" >> $GITHUB_ENV
+          $VERSIONNAME=$(cat version)
+          echo "VERSIONNAME=$VERSIONNAME" >> $GITHUB_ENV
           echo VERSIONNAME is: $VERSIONNAME      
      
     - name: copy latest dll to nuget pkhex.core dir
