@@ -48,9 +48,9 @@ jobs:
       run: tree
       
     - name: list dirs 
-       run: |
-         dir C:\Users\%USERNAME%\.nuget\packages\pkhex.core\
-         dir D:\Users\%USERNAME%\.nuget\packages\pkhex.core\
+      run: |
+        dir C:\Users\%USERNAME%\.nuget\packages\pkhex.core\
+        dir D:\Users\%USERNAME%\.nuget\packages\pkhex.core\
          
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
