@@ -1248,46 +1248,35 @@ namespace PKHeX.Core.AutoMod
         /// <param name="gender"></param>
         public static void FindEggPIDIV8b(PKM pk, Shiny shiny, byte? gender, EncounterCriteria criteria)
         {
-            var ivs = new[] { -1, -1, -1, -1, -1, -1 };
+            Span<int> ivs = stackalloc int[6];
             var IVs = pk.IVs;
-            var required_ivs = new[] { IVs[0], IVs[1], IVs[2], IVs[4], IVs[5], IVs[3] };
+            ReadOnlySpan<int> required_ivs = [IVs[0], IVs[1], IVs[2], IVs[4], IVs[5], IVs[3]];
             var pi = PersonalTable.BDSP.GetFormEntry(pk.Species, pk.Form);
             var ratio = pi.Gender;
+            var species = (int)pk.Species;
 
             while (true)
             {
                 var seed = Util.Rand32();
                 var rng = new Xoroshiro128Plus8b(seed);
 
-                var nido_family_f = new[]
-                {
-                    (int)Species.NidoranF,
-                    (int)Species.Nidorina,
-                    (int)Species.Nidoqueen
-                };
-                var nido_family_m = new[]
-                {
-                    (int)Species.NidoranM,
-                    (int)Species.Nidorino,
-                    (int)Species.Nidoking
-                };
-                if (nido_family_m.Contains(pk.Species) || nido_family_f.Contains(pk.Species))
+                if ((uint)(species - (int)Species.NidoranF) < 6)
                 {
                     var nido_roll = rng.NextUInt(2);
-                    if (nido_roll == 1 && nido_family_m.Contains(pk.Species)) // Nidoran F
+                    if (nido_roll == 1 && species <= (int)Species.Nidoqueen) // Nidoran F
                         continue;
 
-                    if (nido_roll == 0 && nido_family_f.Contains(pk.Species)) // Nidoran M
+                    if (nido_roll == 0 && species >= (int)Species.NidoranM) // Nidoran M
                         continue;
                 }
 
-                if (pk.Species is (int)Species.Illumise or (int)Species.Volbeat)
+                if (species is (int)Species.Illumise or (int)Species.Volbeat)
                 {
-                    if (rng.NextUInt(2) != (int)Species.Illumise - pk.Species)
+                    if (rng.NextUInt(2) != (int)Species.Illumise - species)
                         continue;
                 }
 
-                if (pk.Species == (int)Species.Indeedee)
+                if (species == (int)Species.Indeedee)
                 {
                     if (rng.NextUInt(2) != pk.Form)
                         continue;
@@ -1302,28 +1291,31 @@ namespace PKHeX.Core.AutoMod
                 }
 
                 // nature
-                _ = rng.NextUInt(25); // assume one parent always carry an everstone
+                _ = rng.NextUInt(25); // Assume one parent always carries an Everstone.
 
                 // ability
-                _ = rng.NextUInt(100); // assume the ability is changed using capsule/patch (assume parent is ability 0/1)
+                _ = rng.NextUInt(100); // Ability can be changed using Capsule/Patch (Assume parent is ability 0/1).
+
+                // The game does a rand(6) to decide which IV's inheritance to check.
+                // If that IV isn't marked to inherit from a parent, it does a rand(2) to pick the parent.
+                // When generating egg IVs, it first randomly fills in the egg IVs with rand(32) x6, then overwrites with parent IVs based on tracking.
+                // We'll assume both parents have the perfect IVs and copy over the parent IV as it's inherited, then fill in blanks afterwards.
 
                 // assume other parent always has destiny knot
                 const int inheritCount = 5;
                 var inherited = 0;
+                ivs.Fill(-1);
                 while (inherited < inheritCount)
                 {
-                    var stat = rng.NextUInt(6);
-                    if (ivs[stat] != -1)
-                    {
-                        inherited++;
+                    var stat = (int)rng.NextUInt(6); // Decides which IV to check.
+                    if (ivs[stat] != -1) // Only -1 if not already inherited.
                         continue;
-                    }
 
-                    rng.NextUInt(2); // decides which parents iv to inherit, assume that parent has the required IV
+                    _ = rng.NextUInt(2); // Decides which parent's IV to inherit. Assume both parents have the same desired IVs.
                     ivs[stat] = required_ivs[stat];
                     inherited++;
                 }
-                Span<uint> ivs2 = [
+                Span<uint> randomivs = [
                     rng.NextUInt(32),
                     rng.NextUInt(32),
                     rng.NextUInt(32),
@@ -1334,7 +1326,7 @@ namespace PKHeX.Core.AutoMod
                 for (int i = 0; i < 6; i++)
                 {
                     if (ivs[i] == -1)
-                        ivs[i] = (int)ivs2[i];
+                        ivs[i] = (int)randomivs[i];
                 }
                 if (!criteria.IsIVsCompatibleSpeedLast(ivs, 8))
                     continue;
