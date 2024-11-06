@@ -59,7 +59,11 @@ namespace PKHeX.Core.AutoMod
                     Aesthetics.ApplyShinyBall(pk);
                 }
             }
-
+            if (enc.IsEgg)
+            {
+                if (ball == Ball.Master)
+                    pk.Ball = (byte)Ball.Poke;
+            }
             var la = new LegalityAnalysis(pk);
             if (force || la.Valid)
                 return;
