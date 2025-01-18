@@ -1309,8 +1309,6 @@ public static class APILegality
     /// <param name="set"></param>
     private static void FindPIDIV(PKM pk, PIDType method, int hiddenPower, bool shiny, IEncounterTemplate enc, IBattleTemplate set)
     {
-        if (enc.Generation == 4 && pk.Species == (ushort)Species.Unown) // set unown form for gen 4 encounters because otherwise you get a random form from database
-            pk.Form = set.Form;  //this setting of the form could probably be replaced with adding Form to EncounterCriteria so that it comes out of the database correctly.
         if (method == PIDType.None)
         {
             method = FindLikelyPIDType(enc);
@@ -1583,7 +1581,7 @@ public static class APILegality
                 Revise(criteria, def: criteria.IV_DEF, spe: criteria.IV_SPE),
             (int)Species.Pyukumuku when criteria is { IV_DEF: 0, IV_SPD: 0 } && set.Ability == (int)Ability.InnardsOut =>
                 Revise(criteria, def: criteria.IV_DEF, spd: criteria.IV_SPD),
-            (int)Species.Unown when enc.Generation is 4 => criteria,
+            (int)Species.Unown when enc.Generation is 4 => criteria with { Form = (sbyte)set.Form},
 
             _ => Revise(criteria, atk: criteria.IV_ATK == 0 ? (sbyte)0 : (sbyte)-1, spe: criteria.IV_SPE == 0 ? (sbyte)0 : (sbyte)-1),
         };
