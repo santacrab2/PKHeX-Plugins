@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using AutoModPlugins.Properties;
 using PKHeX.Core;
@@ -38,15 +39,29 @@ public class PasteImporter : AutoModPlugin
 
     private void Downkey(object? sender, KeyEventArgs e)
     {
-        if (e.KeyCode is not (Keys.NumPad6 or Keys.D6) || !e.Control)
+        if (e.KeyCode is not (Keys.NumPad6 or Keys.D6 or Keys.E) || !e.Control)
             return;
 
         if (WinFormsUtil.Prompt(MessageBoxButtons.OKCancel, "Generate 6 Random Pokemon?") != DialogResult.OK)
             return;
-
-        APILegality.RandTypes = _settings.RandomTypes;
+        PKM[] result = [];
         var sav = SaveFileEditor.SAV;
-        var result = sav.GetSixRandomMons();
+        if (e.KeyCode is not Keys.E)
+        {
+            APILegality.RandTypes = _settings.RandomTypes;
+            APILegality.RandTypes = _settings.RandomTypes;
+            result = sav.GetSixRandomMons();
+        }
+        else
+        {
+            var text = GetTextShowdownData();
+            if (string.IsNullOrWhiteSpace(text))
+                return;
+            var made = sav.GenerateEgg(new ShowdownSet(text), out var legalized);
+            result.Append(made);
+            PKMEditor.PopulateFields(made);
+        }
+            
 
         const int slotIndexStart = 0;
         var slot = slotIndexStart - 1;

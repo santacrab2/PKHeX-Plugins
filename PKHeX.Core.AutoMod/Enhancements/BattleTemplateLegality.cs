@@ -93,7 +93,7 @@ public static class BattleTemplateLegality
             return ALPHA_INVALID;
 
         encounters.RemoveAll(enc => !APILegality.IsRequestedAlphaValid(set, enc));
-        if (WordFilter.IsFiltered(failed.Nickname, out _) || WordFilter.IsFiltered(failed.OriginalTrainerName, out _) || WordFilter.IsFiltered(failed.HandlingTrainerName, out _))
+        if (WordFilter.IsFiltered(failed.Nickname, out _,failed.Context) || WordFilter.IsFiltered(failed.OriginalTrainerName, out _,failed.Context) || WordFilter.IsFiltered(failed.HandlingTrainerName, out _,failed.Context))
             return string.Format(BAD_WORDS, species_name);
 
         // Ability checks

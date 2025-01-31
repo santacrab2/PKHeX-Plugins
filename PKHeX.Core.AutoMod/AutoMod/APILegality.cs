@@ -1572,7 +1572,8 @@ public static class APILegality
             return criteria;
         if (enc is EncounterStatic8U)
             criteria = criteria with { Shiny = Shiny.Never };
-
+        if(enc.Generation > 7)
+            criteria = criteria with { Nature = Nature.Random };
         return enc.Species switch
         {
             (int)Species.Kartana when criteria is { Nature: Nature.Timid, IV_ATK: <= 21 } => // Beast Boost: Speed
@@ -1720,5 +1721,67 @@ public static class APILegality
 
         var res = group.GetVersionsWithinRange(versionlist.ToArray());
         return res.Length > 0 ? res : [version];
+    }
+
+    public static PKM GenerateEgg(this ITrainerInfo dest, ShowdownSet set, out LegalizationResult result)
+    {
+        result = LegalizationResult.Failed;
+        var template = EntityBlank.GetBlank(dest.Generation);
+        template.ApplySetDetails(set);
+        var destVer = dest.Version;
+        if (destVer <= 0 && dest is SaveFile s)
+            destVer = s.Version;
+        if (dest.Generation <= 2)
+            template.EXP = 0; // no relearn moves in gen 1/2 so pass level 1 to generator
+        var encounters = GetAllEncounters(template, template.Moves, [dest.Version]);
+        encounters = encounters.Where(z => z.IsEgg);
+        if (!encounters.Any())
+        {
+            result = LegalizationResult.Failed;
+            return template;
+        }
+        var mutations = EncounterMutationUtil.GetSuggested(dest.Context, set.Level);
+        var criteria = EncounterCriteria.GetCriteria(set, template.PersonalInfo, mutations);
+        foreach (var enc in encounters)
+        {
+            criteria = SetSpecialCriteria(criteria, enc, set);
+
+            // Create the PKM from the template.
+            var raw = enc.GetPokemonFromEncounter(dest, criteria, set);
+            raw.IsEgg = true;
+            raw.CurrentFriendship = (byte)EggStateLegality.GetMinimumEggHatchCycles(raw);
+
+            // if egg wasn't originally obtained by OT => Link Trade, else => None
+            if (raw.Format >= 4)
+            {
+                var sav = dest;
+                bool isTraded = sav.OT != raw.OriginalTrainerName || sav.TID16 != raw.TID16 || sav.SID16 != raw.SID16;
+                var loc = isTraded
+                    ? Locations.TradedEggLocation(sav.Generation, sav.Version)
+                    : LocationEdits.GetNoneLocation(raw);
+                raw.MetLocation = (ushort)loc;
+            }
+            else if (raw is PK3)
+            {
+                raw.Language = (int)LanguageID.Japanese; // japanese;
+
+            }
+
+            raw.IsNicknamed = EggStateLegality.IsNicknameFlagSet(raw);
+            raw.Nickname = SpeciesName.GetEggName(raw.Language, raw.Format);
+
+            // Wipe egg memories
+            if (raw.Format >= 6)
+                raw.ClearMemories();
+
+            if (raw is PK9) // Eggs in S/V have a Version value of 0 until hatched.
+                raw.Version = 0;
+            if(new LegalityAnalysis(raw).Valid)
+            {
+                result = LegalizationResult.Regenerated;
+                return raw;
+            }
+        }
+        return template;
     }
 }

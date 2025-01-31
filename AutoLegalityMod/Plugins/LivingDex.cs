@@ -5,6 +5,7 @@ using AutoModPlugins.Properties;
 using PKHeX.Core;
 using PKHeX.Core.AutoMod;
 using System.Collections.Generic;
+using Microsoft.VisualBasic.Devices;
 
 namespace AutoModPlugins;
 
@@ -15,7 +16,11 @@ public class LivingDex : AutoModPlugin
 
     protected override void AddPluginControl(ToolStripDropDownItem modmenu)
     {
-        var ctrl = new ToolStripMenuItem(Name) { Image = Resources.livingdex };
+        var ctrl = new ToolStripMenuItem(Name) 
+        { 
+            Image = Resources.livingdex,
+            ShortcutKeys = Keys.Alt | Keys.E,
+        };
         ctrl.Click += GenLivingDex;
         ctrl.Name = "Menu_LivingDex";
         modmenu.DropDownItems.Add(ctrl);
@@ -26,9 +31,11 @@ public class LivingDex : AutoModPlugin
         var prompt = WinFormsUtil.Prompt(MessageBoxButtons.YesNo, "Generate a Living Dex?");
         if (prompt != DialogResult.Yes)
             return;
-
+        bool egg = false;
+        if (new Keyboard().AltKeyDown)
+            egg = true;
         var sav = SaveFileEditor.SAV;
-        var dex = sav.GenerateLivingDex(sav.Personal);
+        var dex = egg?sav.GenerateLivingEggDex(sav.Personal):sav.GenerateLivingDex(sav.Personal);
         List<PKM> extra = [];
         int generated = IngestToBoxes(sav, dex, extra);
         System.Diagnostics.Debug.WriteLine($"Generated Living Dex with {generated} entries.");
