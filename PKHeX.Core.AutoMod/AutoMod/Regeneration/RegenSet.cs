@@ -15,6 +15,7 @@ public sealed class RegenSet
     public StringInstructionSet Batch { get; }
     public IReadOnlyList<StringInstruction> EncounterFilters { get; }
     public IReadOnlyList<StringInstruction> VersionFilters { get; }
+    public IReadOnlyList<string> SeedFilters { get; }
 
     public readonly bool HasExtraSettings;
     public readonly bool HasTrainerSettings;
@@ -62,12 +63,14 @@ public sealed class RegenSet
             Batch = new StringInstructionSet(Array.Empty<string>());
             EncounterFilters = [];
             VersionFilters = [];
+            SeedFilters = [];
             return;
         }
 
         List<StringInstruction> eFilter = [];
         List<StringInstruction> vFilter = [];
         List<StringInstruction> mods = [];
+        List<string> sFilter = [];
         for (int i = 0; i < lines.Count;)
         {
             var line = lines[i];
@@ -91,6 +94,12 @@ public sealed class RegenSet
                 lines.RemoveAt(i);
                 continue;
             }
+            if (RegenUtil.IsSeedFilter(sanitized,out var s))
+            {
+                sFilter.Add(s);
+                lines.RemoveAt(i);
+                continue;
+            }
             if (line == string.Empty)
             {
                 lines.RemoveAt(i);
@@ -101,6 +110,7 @@ public sealed class RegenSet
         Batch = new([], mods);
         EncounterFilters = eFilter;
         VersionFilters = vFilter;
+        SeedFilters = sFilter;
     }
 
     public string GetSummary()
@@ -118,8 +128,11 @@ public sealed class RegenSet
         if (EncounterFilters.Any())
             sb.AppendLine(RegenUtil.GetSummary(EncounterFilters));
 
-        if (VersionFilters.Count > 0)
+        if (VersionFilters.Any())
             sb.AppendLine(RegenUtil.GetSummary(VersionFilters));
+
+        if(SeedFilters.Any())
+            sb.AppendLine(SeedFilters[0]);
 
         return sb.ToString();
     }

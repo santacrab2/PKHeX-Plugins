@@ -158,7 +158,7 @@ public static class BattleTemplateLegality
 
     private static int Recurse(IBattleTemplate set, Memory<ushort> request, PKM blank, GameVersion[] gamelist, List<ushort> moves)
     {
-        if (moves.Count == 1)
+        if (moves.Count <= 1)
             return 0;
 
         // Breadth first search to find the most valid moveset -- remove one move and check, and restore if not.

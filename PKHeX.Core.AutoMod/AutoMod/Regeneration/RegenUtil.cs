@@ -87,7 +87,17 @@ public static class RegenUtil
         var replaced = line[1..];
         return StringInstruction.TryParseFilter(replaced, out result);
     }
-
+    public static bool IsSeedFilter(ReadOnlySpan<char> line, [NotNullWhen(true)] out string? result)
+    {
+        result = null;
+        if (!line.StartsWith(EncounterFilterPrefix))
+            return false;
+        if (!line[2..].StartsWith("Seed="))
+            return false;
+        var replaced = line[7..];
+        result = "0x"+replaced.ToString();
+        return replaced != string.Empty;
+    }
     public static bool TrySplit(ReadOnlySpan<char> line, out (string Key, string Value) result)
     {
         result = default;

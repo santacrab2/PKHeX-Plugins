@@ -86,7 +86,8 @@ public static class APILegality
         var criteria = EncounterCriteria.GetCriteria(set, template.PersonalInfo, mutations);
         if (regen.EncounterFilters.Any())
             encounters = encounters.Where(enc => BatchEditing.IsFilterMatch(regen.EncounterFilters, enc));
-
+        if (regen.SeedFilters.Any())
+            encounters = encounters.Where(enc => enc is (IGenerateSeed32 or IGenerateSeed64)); // Only allow seed generation for seed encounters
         // For sets that require a specific level, force the level maximum that the generator will yield.
         // Most encounters generate with minimum level; only those with checked PID/IV will have non-minimum levels.
 
@@ -119,8 +120,31 @@ public static class APILegality
             raw = raw.SanityCheckLocation(enc);
             if (raw.IsEgg) // PGF events are sometimes eggs. Force hatch them before proceeding
                 raw.HandleEggEncounters(enc, tr);
-            raw.PreSetPIDIV(enc, set, criteria);
-
+            if (enc is (IGenerateSeed32 or IGenerateSeed64) && regen.SeedFilters.Any())
+            {
+                switch (enc)
+                {
+                    case IGenerateSeed32 GS32:
+                        var converted = Convert.ToUInt32(regen.SeedFilters[0], 16);
+                        GS32.GenerateSeed32(raw, converted);
+                        if (enc is ITeraRaid9 tr9)
+                        {
+                            var type = Tera9RNG.GetTeraType(converted, tr9.TeraType, enc.Species, enc.Form);
+                            ((PK9)raw).TeraTypeOriginal = (MoveType)type;
+                            if (set.TeraType != MoveType.Any && (MoveType)type != set.TeraType && TeraTypeUtil.CanChangeTeraType(enc.Species))
+                                ((PK9)raw).SetTeraType(set.TeraType);
+                        }
+                        break;
+                    case IGenerateSeed64 GS64:
+                        var converted64 = Convert.ToUInt64(regen.SeedFilters[0], 16);
+                        GS64.GenerateSeed64(raw, converted64); break;
+                };
+                
+            }
+            else
+            {
+                raw.PreSetPIDIV(enc, set, criteria);
+            }
             // Transfer any VC1 via VC2, as there may be GSC exclusive moves requested.
             if (dest.Generation >= 7 && raw is PK1 basepk1)
                 raw = basepk1.ConvertToPK2();
@@ -138,7 +162,7 @@ public static class APILegality
 
             // Apply final details
             ApplySetDetails(pk, set, dest, enc, regen, criteria);
-
+            
             // Apply final tweaks to the data.
             if (pk is IGigantamax gmax && gmax.CanGigantamax != set.CanGigantamax)
             {
