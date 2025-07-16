@@ -162,6 +162,11 @@ public abstract class AutoModPlugin : IPlugin
     public virtual void NotifySaveLoaded()
     {
         Console.WriteLine($"{Name} was notified that a Save File was just loaded.");
+        if (SaveFileEditor.SAV.State.Exportable)
+        {   // Register the trainer data for the current save file
+            TrainerSettings.Register(SaveFileEditor.SAV);
+        }
+
     }
 
     public virtual bool TryLoadFile(string filePath)
