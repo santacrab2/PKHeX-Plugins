@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 
 namespace PKHeX.Core.AutoMod;
 
@@ -74,4 +75,34 @@ public sealed record PokeTrainerDetails(PKM Entity) : ITrainerInfo, IRegionOrigi
 
     public byte Generation => Entity.Generation;
     public EntityContext Context => Entity.Context;
+}
+
+public sealed record SuperSimpleTrainerInfo : ITrainerInfo, IRegionOrigin, ITrainerID
+{
+    [Category("Game")]
+    public GameVersion Version { get; set; }
+    [Category("Game")]
+    public byte Generation => Version.GetGeneration();
+    [Category("Game")]
+    public EntityContext Context => Version.GetContext();
+    public string OT { get; set; } = TrainerName.ProgramINT;
+    public ushort TID16 { get; set; } = 12345;
+    public ushort SID16 { get; set; } = 54321;
+    public byte Gender { get; set; }
+    public int Language => (int)LanguageID;
+    public LanguageID LanguageID { get; set; } = LanguageID.English;
+    public uint ID32 { get => (uint)(TID16 | (SID16 << 16)); set => (TID16, SID16) = ((ushort)value, (ushort)(value >> 16)); }
+    public TrainerIDFormat TrainerIDDisplayFormat => this.GetTrainerIDFormat();
+
+    // IRegionOrigin for generation 6/7
+    [Category("Region")]
+    public byte ConsoleRegion { get; set; } = 1; // North America
+    [Category("Region")]
+    public byte Region { get; set; } = 7; // California
+    [Category("Region")]
+    public byte Country { get; set; } = 49; // USA
+
+
+    public SuperSimpleTrainerInfo() { }
+
 }

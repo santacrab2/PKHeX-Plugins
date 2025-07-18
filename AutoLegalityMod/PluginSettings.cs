@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using PKHeX.Core;
+using PKHeX.Core.AutoMod;
 
 namespace AutoModPlugins;
 
@@ -44,7 +45,8 @@ public class PluginSettings
     [Category(Trainer)]
     [Description("Default SID to use while generating Pokémon. (SID16)")]
     public ushort DefaultSID16 { get; set; } = 12345;
-
+    [Category(Trainer)]
+    public  SuperSimpleTrainerInfo[] Trainers { get; set; } = [];
     // Connection
     [Category(Connection)]
     [Description("Stores the last IP used by LiveHeX.")]
