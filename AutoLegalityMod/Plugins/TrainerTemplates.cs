@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -21,56 +21,62 @@ public class TrainerTemplates : AutoModPlugin
         ctrl.Name = "Menu_TrainerTemplates";
         modmenu.DropDownItems.Add(ctrl);
     }
-    private void CreateTrainerTemplates(object? sender, EventArgs e)
-    {
-        if (!Directory.Exists(TrainerPath))
-            Directory.CreateDirectory(TrainerPath);
+  private void CreateTrainerTemplates(object? sender, EventArgs e)
+  {
+      if (!Directory.Exists(TrainerPath))
+          Directory.CreateDirectory(TrainerPath);
 
-        var preservesettings = ParseSettings.Settings.Handler.CheckActiveHandler;
-        ParseSettings.Settings.Handler.CheckActiveHandler = false;
-        var BoxData = new Span<byte>();
-        for (int i = 1; i < 52; i++)
-        {
-            if (!Enum.IsDefined(typeof(GameVersion), (byte)i))
-                continue;
-            if (i == 34)
-                continue;
-            var gen = ((GameVersion)i).Generation == 0 ? 1 : ((GameVersion)i).Generation;
-            var TID = (ushort)Random.Shared.Next(ushort.MaxValue);
-            var SID = (ushort)Random.Shared.Next(ushort.MaxValue);
-            while (TrainerIDVerifier.IsOTIDSuspicious(TID, SID))
-            {
-                TID = (ushort)Random.Shared.Next(ushort.MaxValue);
-                SID = (ushort)Random.Shared.Next(ushort.MaxValue);
-            }
-            var text = $"Pikachu\nOT: {TrainerSettings.DefaultOT}\nTID: {Random.Shared.Next(ushort.MaxValue)}\nSID: {Random.Shared.Next(ushort.MaxValue)}\n.Version={(GameVersion)i}";
-            var set = new RegenTemplate(new ShowdownSet(text), (byte)gen);
+      var preservesettings = ParseSettings.Settings.Handler.CheckActiveHandler;
+      ParseSettings.Settings.Handler.CheckActiveHandler = false;
 
-            var temp = BlankSaveFile.Get((GameVersion)i, TrainerSettings.DefaultOT);
-            var result = temp.GetLegalFromSet(set);
-            result.Created.WriteEncryptedDataStored(BoxData);
-            File.WriteAllBytes(TrainerPath + "/" + result.Created.FileName, BoxData);
-        }
-        ParseSettings.Settings.Handler.CheckActiveHandler = preservesettings;
+      for (int i = 1; i < 52; i++)
+      {
+          if (!Enum.IsDefined(typeof(GameVersion), (byte)i))
+              continue;
+          if (i == 34)
+              continue;
+          var gen = ((GameVersion)i).Generation == 0 ? 1 : ((GameVersion)i).Generation;
+          var TID = (ushort)Random.Shared.Next(ushort.MaxValue);
+          var SID = (ushort)Random.Shared.Next(ushort.MaxValue);
+          while (TrainerIDVerifier.IsOTIDSuspicious(TID, SID))
+          {
+              TID = (ushort)Random.Shared.Next(ushort.MaxValue);
+              SID = (ushort)Random.Shared.Next(ushort.MaxValue);
+          }
+          var text = $"Pikachu\nOT: {TrainerSettings.DefaultOT}\nTID: {TID}\nSID: {SID}\n.Version={(GameVersion)i}";
+          var set = new RegenTemplate(new ShowdownSet(text), (byte)gen);
 
-        var page = new TaskDialogPage
-        {
-            Text = $"The randomized templates were created in {TrainerPath}, edit them to match your preferences."
-        };
-        var ok = new TaskDialogButton("OK");
-        var gotofolder = new TaskDialogButton("Open Folder");
-        page.AllowCancel = true;
-        page.Buttons.Add(ok);
-        page.Buttons.Add(gotofolder);
-        gotofolder.Click += (_, _) =>
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = TrainerPath,
-                UseShellExecute = true
-            });
-        };
-        TaskDialog.ShowDialog(page);
-    }
+          var temp = BlankSaveFile.Get((GameVersion)i, TrainerSettings.DefaultOT);
+          var result = temp.GetLegalFromSet(set);
+
+          if (result.Created == null)
+              continue;
+
+          byte[] data = new byte[result.Created.SIZE_PARTY];
+          result.Created.WriteEncryptedDataParty(data);
+          File.WriteAllBytes(Path.Combine(TrainerPath, result.Created.FileName), data);
+      }
+
+      ParseSettings.Settings.Handler.CheckActiveHandler = preservesettings;
+
+      var page = new TaskDialogPage
+      {
+          Text = $"The randomized templates were created in {TrainerPath}, edit them to match your preferences."
+      };
+      var ok = new TaskDialogButton("OK");
+      var gotofolder = new TaskDialogButton("Open Folder");
+      page.AllowCancel = true;
+      page.Buttons.Add(ok);
+      page.Buttons.Add(gotofolder);
+      gotofolder.Click += (_, _) =>
+      {
+          Process.Start(new ProcessStartInfo
+          {
+              FileName = TrainerPath,
+              UseShellExecute = true
+          });
+      };
+      TaskDialog.ShowDialog(page);
+  }
 
 }
