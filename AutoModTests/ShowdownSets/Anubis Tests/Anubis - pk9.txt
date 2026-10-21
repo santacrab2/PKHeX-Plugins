@@ -22633,3 +22633,43 @@ Adamant Nature
 - Kowtow Cleave  
 - Protect  
 - Swords Dance
+
+Electrode-Hisui
+Ability: Static
+Level: 25
+Tera Type: Electric
+Docile Nature
+~=Location=30012
+~=Version=GO
+.Version=GO
+IVs: 1 HP / 21 Atk / 17 Def / 21 SpA / 17 SpD / 23 Spe
+- Screech
+- Charge Beam
+- Swift
+- Electro Ball
+
+Weezing-Galar (F)
+Ability: Neutralizing Gas
+Level: 38
+Tera Type: Poison
+Gentle Nature
+~=Location=30012
+~=Version=GO
+.Version=GO
+IVs: 29 Atk / 27 Def / 29 SpA / 27 SpD / 26 Spe
+- Fairy Wind
+- Self-Destruct
+- Sludge Bomb
+- Toxic
+
+Gimmighoul-Roaming
+Ability: Run Away
+Level: 14
+Tera Type: Ghost
+Lax Nature
+~=Location=30012
+~=Version=GO
+.Version=GO
+IVs: 7 HP / 25 Atk / 15 Def / 25 SpA / 15 SpD / 26 Spe
+- Tackle
+- Astonish

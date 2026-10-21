@@ -877,3 +877,19 @@ Timid Nature
 - Destiny Bond
 - Focus Blast
 - Shadow Ball
+
+Celebi
+Ability: Natural Cure
+Level: 50
+Dynamax Level: 10
+Quirky Nature
+Ball: Cherish Ball
+Language: French
+~=Location=59995
+.Version=SW
+~=Generation=8
+IVs: 20 Def / 20 SpD / 20 Spe
+- Leech Seed
+- Recover
+- Heal Bell
+- Safeguard

@@ -343,6 +343,8 @@ public partial class LiveHeXUI : Form, ISlotViewer<PictureBox>
         var data = Remote.Bot.ReadSlot(0, 0);
         if (lv >= LiveHeXVersion.ZA_v101 && lv <= LiveHeXVersion.ZA_v202)
             data = data[..344]; //shrink pa9 to incorrect size so debug build doesn't crash
+        if (_settings.EnableDevMode && data.Length < SAV.SAV.SIZE_BOXSLOT)
+            data = new byte[SAV.SAV.SIZE_BOXSLOT];
         var pkm = SAV.SAV.GetDecryptedPKM(data.ToArray());
         bool valid = pkm.Species <= pkm.MaxSpeciesID && pkm.ChecksumValid &&
                      pkm is { Species: 0, EncryptionConstant: 0 }
