@@ -81,7 +81,7 @@ public static class APILegality
             gamelist = [GameVersion.D, GameVersion.P];
         if (gamelist is [GameVersion.RS])
             gamelist = [GameVersion.R, GameVersion.S];
-
+        gamelist = [..gamelist.Where(v => v.Context is not EntityContext.None)];
         var mutations = EncounterMutationUtil.GetSuggested(dest.Context, set.Level);
         var encounters = GetAllEncounters(pk: template, dest, moves: new ReadOnlyMemory<ushort>(set.Moves), gamelist);
         var criteria = EncounterCriteria.GetCriteria(set, template.PersonalInfo, mutations);
