@@ -26,7 +26,7 @@ Regular builds will usually succeed unless there are changes that are incompatib
    - The compiled DLL `AutoModPlugins.dll` for AutoLegality will be in the `AutoLegalityMod\bin\Release\net9.0-windows` directory.
 
 **Bleeding Edge Builds**  
-Use this build method only if the regular builds fail. The Azure Pipelines CI will always use the bleeding edge build method. More details regarding this can be seen in the [azure-pipelines.yml](https://github.com/santacrab2/PKHeX-Plugins/blob/master/azure-pipelines.yml) file.
+Nightly Link for Development Build: [PKHeX-Plugins.zip](https://nightly.link/santacrab2/PKHeX-Plugins/workflows/build/cherrytree/PKHeX-Plugins.zip)
 
 - Clone the PKHeX repository using: `$ git clone https://github.com/kwsch/PKHeX.git`.
 - Clone the PKHeX-Plugins repository using: `$ git clone https://github.com/santacrab2/PKHeX-Plugins.git`.
