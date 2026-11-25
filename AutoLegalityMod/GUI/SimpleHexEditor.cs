@@ -124,7 +124,12 @@ public partial class SimpleHexEditor : Form
     {
         var bytestring = RTB_RAM.Text.Replace("\t", "").Replace(" ", "").Trim();
         Bytes = Decoder.StringToByteArray(bytestring);
-
+        if (psb is null)
+        {
+            DialogResult = DialogResult.OK;
+            Close();
+            return;
+        }
         if (new Keyboard().CtrlKeyDown)
         {
             if (psb.com is not ICommunicatorNX nx)

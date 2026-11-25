@@ -29,7 +29,7 @@ public partial class ALMStatusBar : Form
         Count = 0;
     }
 
-    private void ALMStatusBar_FormClosing(object sender, EventArgs e)
+    private void ALMStatusBar_FormClosing(object? sender, EventArgs e)
     {
         if (e is FormClosingEventArgs fcea && closedbyuser)
         {

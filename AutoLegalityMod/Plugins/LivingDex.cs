@@ -9,6 +9,7 @@ using Microsoft.VisualBasic.Devices;
 using System.Threading.Tasks;
 using AutoModPlugins.GUI;
 using System.Threading;
+using System.Reflection.Metadata;
 
 namespace AutoModPlugins;
 
@@ -28,7 +29,7 @@ public class LivingDex : AutoModPlugin
         ctrl.Name = "Menu_LivingDex";
         modmenu.DropDownItems.Add(ctrl);
     }
-    public static CancellationTokenSource cts;
+    public static CancellationTokenSource? cts;
     private async void GenLivingDex(object? sender, EventArgs e)
     {
         var prompt = WinFormsUtil.Prompt(MessageBoxButtons.YesNo, "Generate a Living Dex?");
